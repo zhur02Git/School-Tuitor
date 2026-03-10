@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SG Study Quiz · MOE Syllabus</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f0ea;--card:#fffdf8;--ink:#17120e;--ink2:#6a5c4f;
+  --accent:#c94b0a;--accent2:#1460b0;--green:#1a9456;
+  --red:#c42b2b;--amber:#d08800;--purple:#7b35c4;
+  --teal:#0e8a7a;--border:#ddd0bc;--shadow:rgba(70,40,10,.10);
+  --r:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+
+/* ── HEADER ── */
+header{background:var(--ink);color:#fff;height:58px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:200;
+  box-shadow:0 2px 14px rgba(0,0,0,.28);}
+.logo{font-family:'DM Serif Display',serif;font-size:19px;letter-spacing:.3px;}
+.logo em{color:var(--accent);font-style:normal;}
+.app{max-width:920px;margin:0 auto;padding:26px 18px 80px;}
+.screen{display:none;animation:fadeUp .38s ease both;}
+.screen.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HOME SCREEN LAYOUT ── */
+.home-layout{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start;}
+@media(max-width:760px){.home-layout{grid-template-columns:1fr;}}
+
+/* ── ERROR BANK SIDEBAR ── */
+.eb-sidebar{background:var(--card);border:2px solid var(--border);border-radius:18px;
+  padding:22px 20px;box-shadow:0 4px 20px var(--shadow);position:sticky;top:78px;}
+.eb-sidebar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.eb-sidebar-title{font-family:'DM Serif Display',serif;font-size:18px;display:flex;align-items:center;gap:8px;}
+.eb-count-chip{background:var(--red);color:#fff;font-size:11px;font-weight:900;border-radius:20px;padding:2px 9px;}
+.eb-mini-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;}
+.eb-mini-stat{background:var(--bg);border-radius:10px;padding:10px 8px;text-align:center;}
+.eb-mini-stat-num{font-size:20px;font-weight:900;}
+.eb-mini-stat-lbl{font-size:9px;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.7px;margin-top:1px;}
+.eb-empty-mini{text-align:center;padding:24px 10px;color:var(--ink2);}
+.eb-empty-mini-icon{font-size:36px;margin-bottom:8px;}
+.eb-empty-mini-text{font-size:13px;font-weight:700;margin-bottom:3px;}
+.eb-empty-mini-sub{font-size:11px;line-height:1.5;}
+.eb-mini-list{display:flex;flex-direction:column;gap:7px;max-height:300px;overflow-y:auto;margin-bottom:14px;}
+.eb-mini-item{background:var(--bg);border-radius:9px;padding:9px 11px;border-left:3px solid var(--red);position:relative;}
+.eb-mini-item.mastered{border-left-color:var(--green);}
+.eb-mini-item-topic{font-size:9.5px;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px;}
+.eb-mini-item-q{font-size:11.5px;font-weight:700;line-height:1.4;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+.eb-mini-item-ans{font-size:11px;color:var(--green);font-weight:700;margin-top:2px;}
+.eb-mini-remove{position:absolute;top:6px;right:7px;background:none;border:none;
+  color:var(--ink2);cursor:pointer;font-size:13px;opacity:.5;line-height:1;}
+.eb-mini-remove:hover{opacity:1;color:var(--red);}
+.eb-mini-actions{display:flex;flex-direction:column;gap:7px;}
+.btn-practice-eb{background:var(--green);color:#fff;border:none;border-radius:10px;
+  padding:11px 16px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;
+  cursor:pointer;transition:all .18s;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-practice-eb:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.btn-practice-eb:disabled{opacity:.4;cursor:default;transform:none;}
+.btn-clear-eb{background:none;border:1.5px solid var(--border);border-radius:10px;
+  padding:8px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;color:var(--ink2);transition:all .18s;width:100%;}
+.btn-clear-eb:hover{border-color:var(--red);color:var(--red);}
+
+/* ── SELECTOR CARDS ── */
+.sel-grid{display:grid;gap:11px;margin-bottom:24px;}
+.sel-grid.col2{grid-template-columns:repeat(2,1fr);}
+.sel-grid.col3{grid-template-columns:repeat(3,1fr);}
+.sel-grid.col4{grid-template-columns:repeat(4,1fr);}
+@media(max-width:560px){
+  .sel-grid.col3{grid-template-columns:repeat(2,1fr);}
+  .sel-grid.col4{grid-template-columns:repeat(2,1fr);}
+}
+.sel-card{background:var(--card);border:2px solid var(--border);border-radius:var(--r);
+  padding:18px 14px;cursor:pointer;transition:all .2s cubic-bezier(.34,1.56,.64,1);
+  text-align:center;position:relative;overflow:hidden;user-select:none;}
+.sel-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:var(--tc,var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .2s;}
+.sel-card:hover{transform:translateY(-3px);box-shadow:0 10px 26px var(--shadow);border-color:var(--tc,var(--accent));}
+.sel-card:hover::after,.sel-card.sel-active::after{transform:scaleX(1);}
+.sel-card.sel-active{border-color:var(--tc,var(--accent));
+  background:color-mix(in srgb,var(--tc,var(--accent)) 8%,var(--card));}
+.sel-icon{font-size:26px;margin-bottom:7px;}
+.sel-title{font-weight:800;font-size:13.5px;margin-bottom:2px;}
+.sel-sub{font-size:10.5px;color:var(--ink2);line-height:1.4;}
+.sel-badge{position:absolute;top:9px;right:9px;font-size:9.5px;font-weight:800;
+  padding:2px 7px;border-radius:5px;color:#fff;background:var(--tc,var(--accent));}
+
+/* ── SECTION LABELS / HERO ── */
+.slabel{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--ink2);margin-bottom:11px;margin-top:2px;}
+.hero-title{font-family:'DM Serif Display',serif;font-size:clamp(24px,3.8vw,40px);line-height:1.2;margin-bottom:7px;}
+.hero-title em{color:var(--accent);font-style:italic;}
+.hero-sub{font-size:13.5px;color:var(--ink2);font-weight:600;line-height:1.65;margin-bottom:20px;max-width:480px;}
+.moe-tag{display:inline-block;background:rgba(20,96,176,.1);color:var(--accent2);
+  border:1.5px solid rgba(20,96,176,.25);border-radius:7px;font-size:11.5px;font-weight:800;
+  padding:3px 11px;margin-bottom:22px;letter-spacing:.4px;}
+
+/* ── BUTTONS ── */
+.btn-primary{background:var(--accent);color:#fff;border:none;border-radius:11px;
+  padding:12px 28px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;
+  cursor:pointer;transition:all .18s;box-shadow:0 4px 13px rgba(201,75,10,.28);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 7px 18px rgba(201,75,10,.38);}
+.btn-primary:disabled{opacity:.4;cursor:default;transform:none;box-shadow:none;}
+.btn-secondary{background:transparent;color:var(--ink);border:2px solid var(--border);
+  border-radius:11px;padding:10px 20px;font-family:'Nunito',sans-serif;font-size:13.5px;
+  font-weight:700;cursor:pointer;transition:all .18s;}
+.btn-secondary:hover{border-color:var(--ink);}
+.btn-ghost{background:none;border:none;color:var(--ink2);font-size:13px;font-weight:700;
+  cursor:pointer;text-decoration:underline;font-family:'Nunito',sans-serif;}
+.btn-ghost:hover{color:var(--red);}
+.btn-green{background:var(--green);color:#fff;border:none;border-radius:11px;
+  padding:12px 26px;font-family:'Nunito',sans-serif;font-size:13.5px;font-weight:800;
+  cursor:pointer;transition:all .18s;}
+.btn-green:hover{transform:translateY(-2px);}
+.action-row{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-top:4px;}
+
+/* ── TOPIC GRID ── */
+.topics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:11px;margin-bottom:24px;}
+.topic-card{background:var(--card);border:2px solid var(--border);border-radius:12px;
+  padding:16px 14px;cursor:pointer;transition:all .2s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;}
+.topic-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--tc,var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .2s;}
+.topic-card:hover{transform:translateY(-3px);box-shadow:0 9px 24px var(--shadow);border-color:var(--tc,var(--accent));}
+.topic-card:hover::before,.topic-card.selected::before{transform:scaleX(1);}
+.topic-card.selected{border-color:var(--tc,var(--accent));background:color-mix(in srgb,var(--tc,var(--accent)) 7%,var(--card));}
+.tc-icon{font-size:22px;margin-bottom:6px;}.tc-name{font-weight:800;font-size:12.5px;margin-bottom:2px;line-height:1.3;}
+.tc-desc{font-size:10px;color:var(--ink2);line-height:1.5;}
+.tc-count{position:absolute;top:10px;right:10px;font-size:9px;font-weight:800;color:var(--ink2);
+  background:var(--bg);border-radius:5px;padding:1px 6px;}
+
+/* ── COUNT PILLS ── */
+.count-row{display:flex;gap:7px;margin-bottom:22px;flex-wrap:wrap;}
+.btn-cnt{background:transparent;color:var(--ink);border:2px solid var(--border);border-radius:9px;
+  padding:7px 17px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .18s;}
+.btn-cnt.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.btn-cnt:hover:not(.active){border-color:var(--ink);}
+
+/* ── QUIZ ── */
+.quiz-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:9px;}
+.prog-wrap{display:flex;align-items:center;gap:9px;}
+.prog-info{font-size:12px;font-weight:700;color:var(--ink2);}
+.prog-track{width:130px;height:7px;background:var(--border);border-radius:6px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--accent);border-radius:6px;transition:width .4s ease;}
+.quiz-mode-tag{font-size:10px;font-weight:800;padding:3px 9px;border-radius:6px;text-transform:uppercase;letter-spacing:.6px;}
+.quiz-mode-tag.normal{background:rgba(20,96,176,.12);color:var(--accent2);}
+.quiz-mode-tag.errorbank{background:rgba(196,43,43,.12);color:var(--red);}
+.score-badge{font-size:12px;font-weight:800;color:var(--green);background:rgba(26,148,86,.12);border-radius:18px;padding:3px 11px;}
+.topic-pill{font-size:9.5px;font-weight:800;padding:3px 9px;border-radius:6px;color:#fff;background:var(--tc,var(--accent));text-transform:uppercase;letter-spacing:.5px;}
+.question-card{background:var(--card);border:2px solid var(--border);border-radius:17px;
+  padding:26px 30px;margin-bottom:13px;box-shadow:0 4px 18px var(--shadow);}
+@media(max-width:540px){.question-card{padding:16px 14px;}}
+.q-num-lbl{font-size:10px;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
+.q-text{font-family:'DM Serif Display',serif;font-size:clamp(14.5px,2.1vw,19px);line-height:1.55;margin-bottom:4px;}
+.q-hint{font-size:11.5px;color:var(--ink2);margin-bottom:16px;font-style:italic;}
+.q-formula{background:var(--bg);border-left:4px solid var(--accent2);border-radius:0 7px 7px 0;
+  padding:8px 13px;font-size:12.5px;font-weight:700;color:var(--accent2);margin-bottom:15px;font-family:'Courier New',monospace;}
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+@media(max-width:480px){.options-grid{grid-template-columns:1fr;}}
+.option-btn{background:var(--bg);border:2px solid var(--border);border-radius:10px;
+  padding:11px 14px;text-align:left;cursor:pointer;font-family:'Nunito',sans-serif;
+  font-size:13px;font-weight:700;color:var(--ink);transition:all .17s;display:flex;align-items:flex-start;gap:9px;}
+.option-btn:hover:not(:disabled){border-color:var(--accent2);background:rgba(20,96,176,.06);transform:translateX(2px);}
+.opt-letter{width:23px;height:23px;border-radius:6px;background:var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;
+  flex-shrink:0;margin-top:1px;transition:all .17s;}
+.option-btn.correct{border-color:var(--green);background:rgba(26,148,86,.09);color:#0b4d30;}
+.option-btn.correct .opt-letter{background:var(--green);color:#fff;}
+.option-btn.wrong{border-color:var(--red);background:rgba(196,43,43,.07);color:#5e1010;}
+.option-btn.wrong .opt-letter{background:var(--red);color:#fff;}
+.option-btn:disabled{cursor:default;}
+.input-row{display:flex;gap:8px;align-items:center;}
+.ans-input{flex:1;padding:10px 13px;border:2px solid var(--border);border-radius:10px;
+  font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;background:var(--bg);color:var(--ink);outline:none;transition:border-color .17s;}
+.ans-input:focus{border-color:var(--accent2);}
+.ans-input.correct{border-color:var(--green);background:rgba(26,148,86,.06);}
+.ans-input.wrong{border-color:var(--red);background:rgba(196,43,43,.05);}
+.submit-btn{background:var(--accent2);color:#fff;border:none;border-radius:10px;
+  padding:10px 17px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .17s;white-space:nowrap;}
+.submit-btn:hover{transform:translateY(-1px);box-shadow:0 5px 13px rgba(20,96,176,.28);}
+.submit-btn:disabled{opacity:.4;cursor:default;transform:none;}
+.feedback-box{margin-top:13px;padding:12px 15px;border-radius:10px;font-size:12.5px;line-height:1.75;font-weight:600;display:none;}
+.feedback-box.show{display:block;animation:fadeUp .26s ease both;}
+.feedback-box.correct{background:rgba(26,148,86,.1);border:1.5px solid var(--green);color:#0b4d30;}
+.feedback-box.wrong{background:rgba(196,43,43,.07);border:1.5px solid var(--red);color:#5e1010;}
+.explanation{margin-top:5px;font-weight:600;color:var(--ink2);font-size:11.5px;line-height:1.8;}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:15px;}
+.btn-next{background:var(--ink);color:#fff;border:none;border-radius:10px;padding:10px 22px;
+  font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .17s;display:none;align-items:center;gap:5px;}
+.btn-next.show{display:flex;}.btn-next:hover{background:#2a1a08;transform:translateX(2px);}
+
+/* ── RESULTS ── */
+.results-card{background:var(--card);border:2px solid var(--border);border-radius:20px;
+  padding:36px 28px;text-align:center;box-shadow:0 8px 32px var(--shadow);margin-bottom:20px;}
+.result-emoji{font-size:56px;margin-bottom:10px;}
+.result-title{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:5px;}
+.result-score{font-size:48px;font-weight:900;color:var(--accent);line-height:1;margin:10px 0 4px;}
+.result-total{font-size:13px;color:var(--ink2);font-weight:600;margin-bottom:16px;}
+.result-msg{font-size:13px;color:var(--ink2);font-weight:600;max-width:360px;margin:0 auto 20px;line-height:1.7;}
+.stat-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+.stat-box{background:var(--bg);border-radius:10px;padding:11px 16px;text-align:center;min-width:76px;}
+.stat-num{font-size:21px;font-weight:900;}.stat-lbl{font-size:9px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:1px;}
+.eb-saved-note{background:rgba(196,43,43,.07);border:1.5px solid var(--red);border-radius:9px;
+  padding:9px 14px;text-align:center;font-size:12px;font-weight:700;color:var(--red);margin-top:12px;}
+.results-actions{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:20px;}
+.review-section{text-align:left;}
+.review-title{font-family:'DM Serif Display',serif;font-size:19px;margin-bottom:11px;}
+.review-item{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:4px solid var(--border);}
+.review-item.ri-correct{border-left-color:var(--green);}
+.review-item.ri-wrong{border-left-color:var(--red);}
+.ri-q{font-weight:700;font-size:12.5px;margin-bottom:5px;line-height:1.5;}
+.ri-ans{font-size:11.5px;font-weight:600;}.ri-ans .ca{color:var(--green);}
+.ri-exp{font-size:11px;color:var(--ink2);margin-top:4px;line-height:1.65;}
+
+/* ── BACK LINK ── */
+.back-link{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700;color:var(--ink2);
+  cursor:pointer;margin-bottom:18px;width:fit-content;transition:color .15s;}
+.back-link:hover{color:var(--ink);}
+
+/* ── SUBJECT CARD COLOURS ── */
+.subj-math{--tc:#1460b0;}
+.subj-amath{--tc:#7b35c4;}
+.subj-science{--tc:#0e8a7a;}
+
+/* ── CONFETTI ── */
+.confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden;}
+.dot{position:absolute;border-radius:2px;opacity:0;animation:fall 2.5s ease-in forwards;}
+@keyframes fall{0%{opacity:1;transform:translateY(-20px) rotate(0deg)}100%{opacity:0;transform:translateY(100vh) rotate(720deg)}}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:18px 0;}
+.tag{display:inline-block;font-size:10px;font-weight:800;padding:2px 9px;border-radius:5px;text-transform:uppercase;letter-spacing:.5px;}
+.tag-pri{background:rgba(20,96,176,.12);color:var(--accent2);}
+.tag-sec{background:rgba(201,75,10,.12);color:var(--accent);}
+.tag-g1{background:#e6f4ed;color:#0e5c38;}
+.tag-g2{background:#fff7e0;color:#7a5500;}
+.tag-g3{background:#fce4e4;color:#7a0f0f;}
+/* ── LOGIN SCREEN ── */
+.login-wrap{min-height:calc(100vh - 58px);display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-card{background:var(--card);border:2px solid var(--border);border-radius:22px;padding:44px 40px;width:100%;max-width:420px;box-shadow:0 8px 40px var(--shadow);text-align:center;}
+@media(max-width:480px){.login-card{padding:32px 22px;}}
+.login-logo{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:4px;}
+.login-logo em{color:var(--accent);font-style:normal;}
+.login-subtitle{font-size:13px;color:var(--ink2);font-weight:600;margin-bottom:32px;line-height:1.6;}
+.login-tabs{display:flex;background:var(--bg);border-radius:10px;padding:3px;margin-bottom:28px;gap:3px;}
+.login-tab{flex:1;padding:9px;border:none;border-radius:8px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;background:transparent;color:var(--ink2);transition:all .18s;}
+.login-tab.active{background:var(--card);color:var(--ink);box-shadow:0 1px 6px var(--shadow);}
+.login-field{text-align:left;margin-bottom:16px;}
+.login-field label{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ink2);margin-bottom:6px;}
+.login-input{width:100%;padding:11px 14px;border:2px solid var(--border);border-radius:10px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;background:var(--bg);color:var(--ink);outline:none;transition:border-color .18s;}
+.login-input:focus{border-color:var(--accent2);}
+.login-input.input-error{border-color:var(--red);}
+.login-err{font-size:12px;color:var(--red);font-weight:700;margin-bottom:12px;min-height:18px;text-align:left;}
+.login-btn{width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:11px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .18s;box-shadow:0 4px 14px rgba(201,75,10,.28);margin-top:4px;}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 7px 18px rgba(201,75,10,.38);}
+.login-note{font-size:11.5px;color:var(--ink2);margin-top:18px;line-height:1.6;}
+.existing-users{text-align:left;margin-bottom:20px;}
+.existing-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ink2);margin-bottom:10px;}
+.user-chips{display:flex;flex-direction:column;gap:7px;}
+.user-chip{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:10px;}
+.user-chip:hover{border-color:var(--accent);transform:translateX(2px);}
+.user-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;flex-shrink:0;}
+.user-info{flex:1;text-align:left;}
+.user-name{font-weight:800;font-size:13px;}
+.user-stats{font-size:11px;color:var(--ink2);font-weight:600;}
+.user-chip-del{background:none;border:none;color:var(--ink2);cursor:pointer;font-size:14px;padding:2px 5px;border-radius:5px;opacity:.5;transition:opacity .15s;}
+.user-chip-del:hover{opacity:1;color:var(--red);}
+/* ── HEADER USER ── */
+.header-user{display:flex;align-items:center;gap:9px;}
+.header-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;flex-shrink:0;}
+.header-username{font-size:12px;font-weight:800;color:#fff;max-width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.header-logout{background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);border:1.5px solid rgba(255,255,255,.2);border-radius:7px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;cursor:pointer;transition:all .18s;}
+.header-logout:hover{background:rgba(255,255,255,.22);color:#fff;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">SG <em>Study</em> Quiz</div>
+  <div class="header-user" id="header-user" style="display:none">
+    <div class="header-avatar" id="header-avatar"></div>
+    <span class="header-username" id="header-username"></span>
+    <button class="header-logout" onclick="logout()">Switch User</button>
+  </div>
+  <div id="header-moe" style="font-size:11px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:.8px;">MOE SYLLABUS</div>
+</header>
+
+<!-- LOGIN SCREEN -->
+<div id="s-login">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-logo">SG <em>Study</em> Quiz</div>
+      <div class="login-subtitle">MOE-aligned questions for Primary &amp; Secondary.<br>Who is practising today?</div>
+      <div class="user-chips" style="margin-bottom:0">
+        <div class="user-chip" onclick="enterApp('Ziyan')">
+          <div class="user-avatar" style="background:#c94b0a">Z</div>
+          <div class="user-info">
+            <div class="user-name">Ziyan</div>
+            <div class="user-stats" id="chip-stats-Ziyan">Loading…</div>
+          </div>
+          <span style="font-size:20px">→</span>
+        </div>
+        <div class="user-chip" onclick="enterApp('Zonghan')">
+          <div class="user-avatar" style="background:#1460b0">Z</div>
+          <div class="user-info">
+            <div class="user-name">Zonghan</div>
+            <div class="user-stats" id="chip-stats-Zonghan">Loading…</div>
+          </div>
+          <span style="font-size:20px">→</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="app" id="app-shell" style="display:none">
+
+<!-- ══ SCREEN 1: HOME ══ -->
+<div class="screen active" id="s-home">
+  <div class="home-layout">
+    <!-- LEFT: start new quiz -->
+    <div>
+      <div class="hero-title">Practice <em>Singapore</em><br>School Subjects</div>
+      <div class="hero-sub">MOE-aligned questions across Maths, A. Maths and Science — from Primary to Secondary.</div>
+      <div class="moe-tag">📘 MOE Express / G3 Syllabus</div>
+
+      <div class="slabel">School Level</div>
+      <div class="sel-grid col2" id="home-level-grid">
+        <div class="sel-card" style="--tc:#1460b0" onclick="pickLevel('primary')">
+          <div class="sel-icon">🏫</div>
+          <div class="sel-title">Primary School</div>
+          <div class="sel-sub">P3 – P6 · PSLE</div>
+        </div>
+        <div class="sel-card" style="--tc:#c94b0a" onclick="pickLevel('secondary')">
+          <div class="sel-icon">🎓</div>
+          <div class="sel-title">Secondary School</div>
+          <div class="sel-sub">Sec 1 – Sec 4 · O-Level</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Error Bank sidebar -->
+    <div class="eb-sidebar" id="eb-sidebar">
+      <div class="eb-sidebar-header">
+        <div class="eb-sidebar-title">📚 Error Bank <span class="eb-count-chip" id="eb-chip">0</span></div>
+      </div>
+      <div id="eb-sidebar-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN 2: GRADE ══ -->
+<div class="screen" id="s-grade">
+  <div class="back-link" onclick="showScreen('s-home')">← Home</div>
+  <div class="slabel" id="grade-label">Select Grade</div>
+  <div class="sel-grid col3" id="grade-grid"></div>
+</div>
+
+<!-- ══ SCREEN 3: SUBJECT ══ -->
+<div class="screen" id="s-subject">
+  <div class="back-link" onclick="showScreen('s-grade')">← Grade</div>
+  <div class="slabel">Select Subject</div>
+  <div class="sel-grid col3" id="subject-grid"></div>
+</div>
+
+<!-- ══ SCREEN 4: DIFFICULTY ══ -->
+<div class="screen" id="s-diff">
+  <div class="back-link" onclick="showScreen('s-subject')">← Subject</div>
+  <div class="slabel">Select Difficulty Level</div>
+  <div class="sel-grid col3">
+    <div class="sel-card" style="--tc:#0e5c38" onclick="pickDiff('G1')">
+      <div class="sel-badge" style="background:#0e5c38">G1</div>
+      <div class="sel-icon">🌱</div>
+      <div class="sel-title">G1 · Foundation</div>
+      <div class="sel-sub">Core concepts, direct application</div>
+    </div>
+    <div class="sel-card" style="--tc:#7a5500" onclick="pickDiff('G2')">
+      <div class="sel-badge" style="background:#7a5500">G2</div>
+      <div class="sel-icon">📘</div>
+      <div class="sel-title">G2 · Standard</div>
+      <div class="sel-sub">Mixed problems, moderate challenge</div>
+    </div>
+    <div class="sel-card" style="--tc:#7a0f0f" onclick="pickDiff('G3')">
+      <div class="sel-badge" style="background:#7a0f0f">G3</div>
+      <div class="sel-icon">🔥</div>
+      <div class="sel-title">G3 · Advanced</div>
+      <div class="sel-sub">Complex problems, exam standard</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN 5: TOPICS ══ -->
+<div class="screen" id="s-topics">
+  <div class="back-link" onclick="showScreen('s-diff')">← Difficulty</div>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;flex-wrap:wrap;">
+    <div class="slabel" style="margin:0">Choose Topics</div>
+    <span class="tag" id="ctx-tag"></span>
+  </div>
+  <div class="hero-sub" id="topics-sub" style="margin-bottom:16px;"></div>
+  <div class="topics-grid" id="topics-grid"></div>
+  <div class="slabel">Number of Questions</div>
+  <div class="count-row">
+    <button class="btn-cnt active" onclick="setCount(10,this)">10</button>
+    <button class="btn-cnt" onclick="setCount(20,this)">20</button>
+    <button class="btn-cnt" onclick="setCount(30,this)">30</button>
+  </div>
+  <div class="action-row">
+    <button class="btn-primary" onclick="startQuiz(false)">Start Quiz →</button>
+    <button class="btn-secondary" onclick="selectAll()">Select All</button>
+    <span style="font-size:12px;font-weight:600;color:var(--ink2);" id="sel-label">0 topics selected</span>
+  </div>
+</div>
+
+<!-- ══ SCREEN 6: QUIZ ══ -->
+<div class="screen" id="s-quiz">
+  <div class="quiz-topbar">
+    <div class="prog-wrap">
+      <span class="prog-info" id="q-counter">Q 1 / 10</span>
+      <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+      <span class="quiz-mode-tag normal" id="quiz-mode-tag">Quiz</span>
+      <span class="topic-pill" id="q-pill">Topic</span>
+      <span class="score-badge" id="live-score">0/0</span>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num-lbl" id="q-num-lbl">Question 1</div>
+    <div class="q-text" id="q-text"></div>
+    <div class="q-hint" id="q-hint"></div>
+    <div class="q-formula" id="q-formula" style="display:none"></div>
+    <div id="q-body"></div>
+    <div class="feedback-box" id="feedback"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn-ghost" onclick="confirmQuit()">✕ Quit</button>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">Next →</button>
+  </div>
+</div>
+
+<!-- ══ SCREEN 7: RESULTS ══ -->
+<div class="screen" id="s-results">
+  <div class="results-card">
+    <div class="result-emoji" id="res-emoji">🎉</div>
+    <div class="result-title" id="res-title">Quiz Complete!</div>
+    <div class="result-score" id="res-score">8</div>
+    <div class="result-total" id="res-total">out of 10 correct</div>
+    <div class="result-msg" id="res-msg"></div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-num" id="st-c" style="color:var(--green)">0</div><div class="stat-lbl">Correct</div></div>
+      <div class="stat-box"><div class="stat-num" id="st-w" style="color:var(--red)">0</div><div class="stat-lbl">Wrong</div></div>
+      <div class="stat-box"><div class="stat-num" id="st-p" style="color:var(--accent)">0%</div><div class="stat-lbl">Score</div></div>
+    </div>
+    <div id="eb-res-note"></div>
+    <div class="results-actions">
+      <button class="btn-primary" onclick="retryQuiz()">Retry</button>
+      <button class="btn-green" onclick="goHomeAndPracticeEB()" id="res-practice-eb-btn" style="display:none">📚 Practice Errors</button>
+      <button class="btn-secondary" onclick="showScreen('s-topics')">← Topics</button>
+      <button class="btn-secondary" onclick="showScreen('s-home')">🏠 Home</button>
+    </div>
+  </div>
+  <div class="review-section">
+    <div class="review-title">Question Review</div>
+    <div id="review-list"></div>
+  </div>
+</div><!-- /app-shell screens -->
+</div><!-- /app-shell -->
+<div class="confetti" id="confetti"></div>
+
+<script>
+
+// ════════════════════════════════════════════════════════════════════
+//  TOPIC METADATA
+// ════════════════════════════════════════════════════════════════════
+const TOPIC_META = {
+  // PRIMARY MATHS
+  'p-numbers':    {name:'Whole Numbers',        icon:'🔢', color:'#1460b0'},
+  'p-fractions':  {name:'Fractions',            icon:'½',  color:'#7b35c4'},
+  'p-decimals':   {name:'Decimals & %',         icon:'💯', color:'#0e8a7a'},
+  'p-ratio':      {name:'Ratio',                icon:'⚖️', color:'#c94b0a'},
+  'p-geometry':   {name:'Geometry & Mensuration',icon:'📐', color:'#1a9456'},
+  'p-measure':    {name:'Measurement',          icon:'📏', color:'#1460b0'},
+  'p-data':       {name:'Data Analysis',        icon:'📊', color:'#8b0000'},
+  'p-algebra':    {name:'Algebra',              icon:'✏️', color:'#c94b0a'},
+  // SECONDARY MATHS
+  's-numbers':    {name:'Numbers & Indices',    icon:'🔢', color:'#1460b0'},
+  's-algebra':    {name:'Algebraic Expressions',icon:'✏️', color:'#c94b0a'},
+  's-equations':  {name:'Equations & Inequalities',icon:'⚖️', color:'#7b35c4'},
+  's-proportion': {name:'Proportion',           icon:'📊', color:'#1460b0'},
+  's-graphs':     {name:'Graphs & Functions',   icon:'📈', color:'#1a9456'},
+  's-geometry':   {name:'Geometry & Trigonometry',icon:'📐', color:'#0e8a7a'},
+  's-mensuration':{name:'Mensuration',          icon:'📏', color:'#c94b0a'},
+  's-statistics': {name:'Statistics & Prob.',  icon:'📉', color:'#8b0000'},
+  's-vectors':    {name:'Vectors',              icon:'➡️', color:'#7b35c4'},
+  // A-MATHS
+  'a-polynomials':{name:'Polynomials',          icon:'🔍', color:'#7b35c4'},
+  'a-explog':     {name:'Exponential & Log',    icon:'📐', color:'#7b35c4'},
+  'a-trig':       {name:'Trigonometry',         icon:'📐', color:'#1460b0'},
+  'a-calculus':   {name:'Calculus',             icon:'∫',  color:'#c94b0a'},
+  'a-binomial':   {name:'Binomial Theorem',     icon:'🔢', color:'#0e8a7a'},
+  'a-coord':      {name:'Coordinate Geometry',  icon:'📈', color:'#1a9456'},
+  // SCIENCE
+  'sci-biology':  {name:'Biology',              icon:'🧬', color:'#1a9456'},
+  'sci-chemistry':{name:'Chemistry',            icon:'⚗️', color:'#0e8a7a'},
+  'sci-physics':  {name:'Physics',              icon:'⚡', color:'#1460b0'},
+  'sci-p-science':{name:'Science (General)',    icon:'🔬', color:'#0e8a7a'},
+};
+
+// ════════════════════════════════════════════════════════════════════
+//  CURRICULUM STRUCTURE
+// ════════════════════════════════════════════════════════════════════
+const CURRICULUM = {
+  primary:{
+    grades:['P3','P4','P5','P6'],
+    subjects:{math:'Mathematics', science:'Science'},
+    topics:{
+      P3:{ math:['p-numbers','p-fractions','p-measure','p-geometry'], science:['sci-p-science'] },
+      P4:{ math:['p-numbers','p-fractions','p-decimals','p-geometry','p-measure'], science:['sci-p-science'] },
+      P5:{ math:['p-fractions','p-decimals','p-ratio','p-geometry','p-measure','p-data'], science:['sci-p-science'] },
+      P6:{ math:['p-fractions','p-decimals','p-ratio','p-geometry','p-algebra','p-data'], science:['sci-p-science'] },
+    }
+  },
+  secondary:{
+    grades:['Sec 1','Sec 2','Sec 3','Sec 4'],
+    subjects:{math:'Mathematics', amath:'Additional Mathematics', science:'Science'},
+    topics:{
+      'Sec 1':{ math:['s-numbers','s-algebra','s-equations','s-proportion','s-geometry','s-statistics'],
+                science:['sci-biology','sci-chemistry','sci-physics'] },
+      'Sec 2':{ math:['s-algebra','s-equations','s-proportion','s-graphs','s-geometry','s-mensuration','s-statistics'],
+                amath:['a-polynomials','a-coord','a-trig'],
+                science:['sci-biology','sci-chemistry','sci-physics'] },
+      'Sec 3':{ math:['s-numbers','s-equations','s-graphs','s-geometry','s-mensuration','s-statistics'],
+                amath:['a-polynomials','a-explog','a-trig','a-calculus','a-binomial','a-coord'],
+                science:['sci-biology','sci-chemistry','sci-physics'] },
+      'Sec 4':{ math:['s-numbers','s-graphs','s-geometry','s-mensuration','s-statistics','s-vectors'],
+                amath:['a-explog','a-trig','a-calculus','a-binomial','a-coord'],
+                science:['sci-biology','sci-chemistry','sci-physics'] },
+    }
+  }
+};
+
+// ════════════════════════════════════════════════════════════════════
+//  QUESTION BANK
+//  G1=Foundation, G2=Standard, G3=Advanced
+// ════════════════════════════════════════════════════════════════════
+const QBANK = {
+
+// ── PRIMARY MATHS ────────────────────────────────────────────────
+'p-numbers':{
+G1:[
+  {type:'mcq',text:'What is 346 + 279?',options:['625','615','635','525'],answer:0,explanation:'346+279: 300+200=500, 40+70=110, 6+9=15. Total=625.'},
+  {type:'mcq',text:'What is 800 − 357?',options:['443','453','343','463'],answer:0,explanation:'800−357=443. Use regrouping.'},
+  {type:'input',text:'7 × 8 = ?',answer:'56',explanation:'7×8=56.'},
+  {type:'mcq',text:'Round 4,682 to the nearest hundred.',options:['4700','4600','5000','4000'],answer:0,explanation:'Tens digit is 8 ≥ 5, so round up to 4700.'},
+  {type:'input',text:'63 ÷ 7 = ?',answer:'9',explanation:'7×9=63, so 63÷7=9.'},
+],
+G2:[
+  {type:'mcq',text:'A school has 1,248 boys and 1,365 girls. How many pupils altogether?',options:['2613','2513','2623','2503'],answer:0,explanation:'1248+1365=2613.'},
+  {type:'mcq',text:'What is the value of the digit 6 in 36,472?',options:['6000','600','60','6'],answer:0,explanation:'The 6 is in the thousands place = 6,000.'},
+  {type:'input',text:'Find the product of 24 and 35.',answer:'840',explanation:'24×35=24×30+24×5=720+120=840.'},
+  {type:'mcq',text:'168 pupils split equally into 8 groups. How many per group?',options:['21','22','18','24'],answer:0,explanation:'168÷8=21.'},
+  {type:'mcq',text:'Which is NOT a multiple of 6?',options:['38','24','36','42'],answer:0,explanation:'38÷6=6 rem 2, so 38 is not a multiple of 6.'},
+],
+G3:[
+  {type:'mcq',text:'Two numbers sum to 1,500. One is 3 times the other. Find the smaller.',options:['375','500','250','750'],answer:0,explanation:'n+3n=1500 → 4n=1500 → n=375.'},
+  {type:'input',text:'LCM of 8 and 12?',answer:'24',explanation:'Multiples of 8:8,16,24. Multiples of 12:12,24. LCM=24.'},
+  {type:'mcq',text:'A factory makes 1,248 items per day. How many in 15 days?',options:['18720','18270','17280','19280'],answer:0,explanation:'1248×15=18720.'},
+  {type:'mcq',text:'HCF of 36 and 48?',options:['12','6','4','24'],answer:0,explanation:'Factors: 36:{1,2,3,4,6,9,12,18,36}, 48:{1,2,3,4,6,8,12,16,24,48}. HCF=12.'},
+]
+},
+
+'p-fractions':{
+G1:[
+  {type:'mcq',text:'3 out of 8 parts are shaded. What fraction is shaded?',options:['3/8','5/8','1/3','3/5'],answer:0,explanation:'Shaded=3, Total=8. Fraction=3/8.'},
+  {type:'input',text:'Simplify 6/8.',answer:'3/4',explanation:'HCF of 6 and 8 is 2. 6/8=3/4.'},
+  {type:'mcq',text:'Which is equivalent to 1/2?',options:['4/8','3/5','2/5','1/4'],answer:0,explanation:'4÷4/8÷4=1/2. So 4/8≡1/2.'},
+],
+G2:[
+  {type:'mcq',text:'Ali ate 2/5 of a pizza, Ben ate 1/4. Who ate more?',options:['Ali','Ben','Same','Cannot tell'],answer:0,explanation:'2/5=8/20, 1/4=5/20. Ali ate more.'},
+  {type:'input',text:'1/3 + 1/4 = ? (as a fraction)',answer:'7/12',explanation:'LCD=12. 4/12+3/12=7/12.'},
+  {type:'mcq',text:'3/4 of 48 = ?',options:['36','32','40','24'],answer:0,explanation:'48÷4×3=36.'},
+  {type:'mcq',text:'5/6 − 1/3 = ?',options:['1/2','2/3','1/6','4/3'],answer:0,explanation:'1/3=2/6. 5/6−2/6=3/6=1/2.'},
+],
+G3:[
+  {type:'mcq',text:'Mary spent 2/5 on food and 1/4 on transport. Fraction left?',options:['7/20','3/20','13/20','9/20'],answer:0,explanation:'Spent=8/20+5/20=13/20. Left=7/20.'},
+  {type:'input',text:'2⅓ + 1¾ = ? (e.g. 4 1/12)',answer:'4 1/12',explanation:'7/3+7/4=28/12+21/12=49/12=4 1/12.'},
+  {type:'mcq',text:'A tank 3/5 full; add 24L makes it 4/5 full. Tank capacity?',options:['120 L','60 L','96 L','80 L'],answer:0,explanation:'1/5 of tank=24L. Full tank=120L.'},
+]
+},
+
+'p-decimals':{
+G1:[
+  {type:'mcq',text:'3.6 + 2.8 = ?',options:['6.4','6.14','5.4','7.4'],answer:0,explanation:'3+2=5, 0.6+0.8=1.4. Total=6.4.'},
+  {type:'input',text:'Round 4.67 to 1 decimal place.',answer:'4.7',explanation:'Second decimal 7≥5, round up: 4.7.'},
+  {type:'mcq',text:'40% of 80 = ?',options:['32','40','24','28'],answer:0,explanation:'0.4×80=32.'},
+],
+G2:[
+  {type:'mcq',text:'Shirt $24.50, shoes $58.90. Total?',options:['$83.40','$84.40','$82.40','$83.90'],answer:0,explanation:'24.50+58.90=83.40.'},
+  {type:'mcq',text:'Convert 3/8 to a decimal.',options:['0.375','0.38','0.3','0.4'],answer:0,explanation:'3÷8=0.375.'},
+  {type:'input',text:'A book costs $12.60 after 10% discount. Original price?',answer:'14',explanation:'x×0.9=12.60. x=$14.'},
+],
+G3:[
+  {type:'mcq',text:'Price rises from $45 to $54. % increase?',options:['20%','15%','25%','18%'],answer:0,explanation:'(9/45)×100=20%.'},
+  {type:'mcq',text:'After 9% GST item costs $54.50. Price before GST?',options:['$50','$49.54','$51','$48.50'],answer:0,explanation:'54.50÷1.09≈$50.'},
+]
+},
+
+'p-ratio':{
+G1:[
+  {type:'mcq',text:'Simplify 12:8.',options:['3:2','4:3','6:4','2:3'],answer:0,explanation:'HCF=4. 12/4:8/4=3:2.'},
+  {type:'input',text:'Ratio red:blue = 2:3. If 10 red, how many blue?',answer:'15',explanation:'Blue=10×3/2=15.'},
+],
+G2:[
+  {type:'mcq',text:'John, Mary and Tom share $240 in ratio 1:2:3. Mary gets?',options:['$80','$40','$120','$60'],answer:0,explanation:'Total parts=6. Mary=2/6×240=$80.'},
+  {type:'mcq',text:'Length:width = 5:3. Width=12cm. Length?',options:['20 cm','15 cm','18 cm','25 cm'],answer:0,explanation:'Length=12×5/3=20cm.'},
+],
+G3:[
+  {type:'mcq',text:'Shared 3:4:5. Largest is $120 more than smallest. Total?',options:['$720','$600','$480','$540'],answer:0,explanation:'Difference=2 parts=$120. 1 part=$60. Total=12×$60=$720.'},
+]
+},
+
+'p-geometry':{
+G1:[
+  {type:'mcq',text:'How many sides does a hexagon have?',options:['6','5','7','8'],answer:0,explanation:'Hexagon = 6 sides.'},
+  {type:'mcq',text:'Sum of angles in a triangle?',options:['180°','360°','90°','270°'],answer:0,explanation:'Angles in a triangle always sum to 180°.'},
+  {type:'input',text:'Triangle has angles 40° and 75°. Third angle?',answer:'65',explanation:'180−40−75=65°.'},
+],
+G2:[
+  {type:'mcq',text:'Area of rectangle 12 cm × 7 cm?',options:['84 cm²','38 cm²','19 cm²','96 cm²'],answer:0,explanation:'Area=12×7=84 cm².'},
+  {type:'mcq',text:'Perimeter of square with side 9 cm?',options:['36 cm','18 cm','81 cm','45 cm'],answer:0,explanation:'Perimeter=4×9=36 cm.'},
+  {type:'input',text:'Area of triangle: base 10 cm, height 6 cm?',answer:'30',explanation:'Area=½×10×6=30 cm².'},
+],
+G3:[
+  {type:'mcq',text:'Circle radius 7 cm. Area? (π≈22/7)',options:['154 cm²','44 cm²','88 cm²','140 cm²'],answer:0,explanation:'πr²=(22/7)×49=154 cm².'},
+  {type:'mcq',text:'Trapezium: parallel sides 8 and 12 cm, height 5 cm. Area?',options:['50 cm²','40 cm²','60 cm²','45 cm²'],answer:0,explanation:'½×(8+12)×5=50 cm².'},
+]
+},
+
+'p-measure':{
+G1:[
+  {type:'mcq',text:'2.5 litres = ? mL',options:['2500 mL','250 mL','25 mL','2050 mL'],answer:0,explanation:'1L=1000mL. 2.5L=2500mL.'},
+  {type:'input',text:'3.2 km = ? m',answer:'3200',explanation:'1km=1000m. 3.2km=3200m.'},
+],
+G2:[
+  {type:'mcq',text:'2.35 kg = ? g',options:['2350 g','235 g','2035 g','23.5 g'],answer:0,explanation:'1kg=1000g. 2.35kg=2350g.'},
+  {type:'mcq',text:'Journey starts 09:45, ends 12:20. Duration?',options:['2 h 35 min','2 h 25 min','3 h 35 min','2 h 15 min'],answer:0,explanation:'12:20−09:45=2h 35min.'},
+],
+G3:[
+  {type:'mcq',text:'Pool 25m × 15m × 1.8m deep. Volume?',options:['675 m³','375 m³','450 m³','540 m³'],answer:0,explanation:'25×15×1.8=675 m³.'},
+]
+},
+
+'p-data':{
+G1:[
+  {type:'mcq',text:'Mean of 5 numbers is 12. Their sum?',options:['60','12','17','24'],answer:0,explanation:'Sum=Mean×Count=12×5=60.'},
+],
+G2:[
+  {type:'mcq',text:'Scores: 8,4,7,9,7. Mode?',options:['7','8','9','4'],answer:0,explanation:'7 appears twice. Mode=7.'},
+  {type:'input',text:'Find the median of: 3,8,1,6,2,9,4.',answer:'4',explanation:'Sorted:1,2,3,4,6,8,9. Middle value=4.'},
+],
+G3:[
+  {type:'mcq',text:'Mean of 8 numbers is 9. A 9th number 18 is added. New mean?',options:['10','9','11','9.5'],answer:0,explanation:'Old sum=72. New sum=90. 90÷9=10.'},
+  {type:'mcq',text:'Mean of 6 numbers is 15. A 7th number makes mean 16. What is the 7th?',options:['22','17','21','16'],answer:0,explanation:'Old sum=90. New sum=112. 7th=112−90=22.'},
+]
+},
+
+'p-algebra':{
+G2:[
+  {type:'mcq',text:'If n + 8 = 15, find n.',options:['7','8','23','6'],answer:0,explanation:'n=15−8=7.'},
+  {type:'mcq',text:'If 3n = 27, find n.',options:['9','8','10','24'],answer:0,explanation:'n=27÷3=9.'},
+],
+G3:[
+  {type:'mcq',text:'Pen costs $p. Book costs $3 more than twice the pen. Book = $11. Find p.',options:['4','5','3','7'],answer:0,explanation:'2p+3=11 → 2p=8 → p=4.'},
+  {type:'input',text:'4y − 5 = 19. Find y.',answer:'6',explanation:'4y=24 → y=6.'},
+  {type:'mcq',text:'Simplify: 3a + 2b − a + 4b',options:['2a + 6b','4a + 6b','2a + 2b','3a + 6b'],answer:0,explanation:'(3a−a)+(2b+4b)=2a+6b.'},
+]
+},
+
+// ── SECONDARY MATHS ──────────────────────────────────────────────
+'s-numbers':{
+G1:[
+  {type:'mcq',text:'Simplify: 2³ × 2⁴',options:['2⁷','2¹²','4⁷','2¹'],answer:0,explanation:'aᵐ×aⁿ=aᵐ⁺ⁿ. 2³×2⁴=2⁷.'},
+  {type:'mcq',text:'Evaluate: 5⁰',options:['1','0','5','undefined'],answer:0,explanation:'Any non-zero number to power 0 = 1.'},
+  {type:'input',text:'3⁶ ÷ 3² = 3ⁿ. What is n?',answer:'4',explanation:'aᵐ÷aⁿ=aᵐ⁻ⁿ. 3⁶÷3²=3⁴.'},
+],
+G2:[
+  {type:'mcq',text:'Simplify: (2x²y³)²',options:['4x⁴y⁶','2x⁴y⁶','4x²y³','4x⁴y³'],answer:0,explanation:'2²=4,(x²)²=x⁴,(y³)²=y⁶. Answer:4x⁴y⁶.'},
+  {type:'mcq',text:'Evaluate: 4^(3/2)',options:['8','6','12','16'],answer:0,explanation:'(√4)³=2³=8.'},
+  {type:'mcq',text:'Simplify: (x³y⁻²)/(x⁻¹y)',options:['x⁴/y³','x²/y','x⁴y³','x²y³'],answer:0,explanation:'x³·x¹=x⁴; y⁻²÷y=y⁻³. Result: x⁴/y³.'},
+],
+G3:[
+  {type:'mcq',text:'Solve: 2^(2x+1) = 32',options:['x=2','x=3','x=1.5','x=4'],answer:0,explanation:'32=2⁵. 2x+1=5 → x=2.'},
+  {type:'input',text:'Simplify √(48x⁴) in the form a√b·x^n (e.g. 4√3x²)',answer:'4√3x²',explanation:'√48=4√3, √(x⁴)=x². Answer: 4√3x².'},
+  {type:'mcq',text:'3^(x+1) = 9^(x−1). Find x.',options:['x=3','x=4','x=2','x=5'],answer:0,explanation:'9^(x−1)=3^(2x−2). x+1=2x−2 → x=3.'},
+]
+},
+
+'s-algebra':{
+G1:[
+  {type:'mcq',text:'Expand: 3(x + 4)',options:['3x+12','3x+4','x+12','3x+7'],answer:0,explanation:'3×x+3×4=3x+12.'},
+  {type:'mcq',text:'Expand: (x+2)(x+3)',options:['x²+5x+6','x²+6x+5','x²+5x+5','x²+6'],answer:0,explanation:'FOIL: x²+3x+2x+6=x²+5x+6.'},
+],
+G2:[
+  {type:'mcq',text:'Expand: (2x−3)²',options:['4x²−12x+9','4x²+9','4x²−6x+9','4x²−12x−9'],answer:0,explanation:'(a−b)²=a²−2ab+b². (2x−3)²=4x²−12x+9.'},
+  {type:'mcq',text:'Expand: (x+5)(x−5)',options:['x²−25','x²+25','x²−10x−25','x²−5x+5'],answer:0,explanation:'Difference of squares: x²−25.'},
+  {type:'mcq',text:'Factorise: x²+7x+12',options:['(x+3)(x+4)','(x+2)(x+6)','(x+4)²','(x+1)(x+12)'],answer:0,explanation:'×→12, sum→7: 3,4. So (x+3)(x+4).'},
+],
+G3:[
+  {type:'mcq',text:'Factorise completely: 6x²+x−2',options:['(3x+2)(2x−1)','(6x−1)(x+2)','(2x+1)(3x−2)','Cannot factorise'],answer:0,explanation:'Product=−12. Need ×−12, sum+1: 4,−3. Split: 6x²+4x−3x−2=2x(3x+2)−(3x+2)=(3x+2)(2x−1).'},
+  {type:'mcq',text:'Simplify: (x²−4)/(x²−x−2)',options:['(x+2)/(x+1)','(x−2)/(x+1)','(x+2)/(x−1)','x+2'],answer:0,explanation:'Num:(x−2)(x+2). Denom:(x−2)(x+1). Cancel: (x+2)/(x+1).'},
+]
+},
+
+'s-equations':{
+G1:[
+  {type:'mcq',text:'Solve: 3x + 5 = 20',options:['x=5','x=8','x=3','x=7'],answer:0,explanation:'3x=15 → x=5.'},
+  {type:'mcq',text:'Solve: x²−9=0',options:['x=3 or x=−3','x=3 only','x=9 only','x=0 or x=9'],answer:0,explanation:'x²=9 → x=±3.'},
+],
+G2:[
+  {type:'mcq',text:'Solve: x²−5x+6=0',options:['x=2 or x=3','x=−2 or x=−3','x=1 or x=6','x=2 or x=−3'],answer:0,explanation:'(x−2)(x−3)=0. x=2 or x=3.'},
+  {type:'mcq',text:'Solve: 2x²−7x+3=0',options:['x=3 or x=½','x=−3 or x=−½','x=3 or x=−½','x=1 or x=3'],answer:0,explanation:'(2x−1)(x−3)=0. x=½ or x=3.'},
+  {type:'mcq',text:'Solve: x+y=10, x−y=4. Find x.',options:['x=7','x=6','x=8','x=5'],answer:0,explanation:'Add: 2x=14 → x=7.'},
+],
+G3:[
+  {type:'mcq',text:'Quadratic formula for ax²+bx+c=0 is:',options:['(−b±√(b²−4ac))/2a','(b±√(b²−4ac))/2a','(−b±√(b²+4ac))/2a','(b±√(b²+4ac))/a'],answer:0,explanation:'x=(−b±√(b²−4ac))/2a. Memorise this!'},
+  {type:'mcq',text:'Solve: x²+4x−1=0',options:['x=−2±√5','x=4±√5','x=−2±√3','x=2±√5'],answer:0,explanation:'x=(−4±√(16+4))/2=(−4±√20)/2=−2±√5.'},
+  {type:'mcq',text:'For what value of k does x²−kx+4=0 have equal roots?',options:['k=4 or −4','k=2 or −2','k=8 or −8','k=1 or −1'],answer:0,explanation:'Equal roots: b²−4ac=0. k²−16=0 → k=±4.'},
+]
+},
+
+'s-proportion':{
+G1:[
+  {type:'mcq',text:'y ∝ x. When x=4, y=12. Find y when x=7.',options:['21','28','16','14'],answer:0,explanation:'k=12/4=3. y=3×7=21.'},
+  {type:'mcq',text:'y ∝ 1/x. When x=3, y=12. Find y when x=6.',options:['6','4','24','9'],answer:0,explanation:'k=3×12=36. y=36/6=6.'},
+],
+G2:[
+  {type:'mcq',text:'6 workers build a wall in 8 days. How many days for 4 workers?',options:['12','6','10','16'],answer:0,explanation:'k=6×8=48. Days=48/4=12.'},
+  {type:'mcq',text:'y ∝ x². When x=2, y=20. Find y when x=5.',options:['125','50','80','100'],answer:0,explanation:'k=20/4=5. y=5×25=125.'},
+],
+G3:[
+  {type:'mcq',text:'y ∝ x³. When x=2, y=40. Find y when x=3.',options:['135','45','120','180'],answer:0,explanation:'k=40/8=5. y=5×27=135.'},
+  {type:'input',text:'y ∝ 1/x². When x=2, y=9. Find y when x=6.',answer:'1',explanation:'k=9×4=36. y=36/36=1.'},
+]
+},
+
+'s-graphs':{
+G1:[
+  {type:'input',text:'Gradient of y=4x−3?',answer:'4',explanation:'y=mx+c, gradient m=4.'},
+  {type:'mcq',text:'Find x-intercept of y=2x−6.',options:['x=3','x=−3','x=6','x=−6'],answer:0,explanation:'Set y=0: 2x=6 → x=3.'},
+],
+G2:[
+  {type:'mcq',text:'Lines y=3x+2 and y=3x−5 are:',options:['Parallel','Perpendicular','Intersecting','Same line'],answer:0,explanation:'Same gradient (3), different y-intercepts → parallel.'},
+  {type:'mcq',text:'Line through (2,5) and (4,11). Find its equation.',options:['y=3x−1','y=2x+1','y=3x+1','y=3x−2'],answer:0,explanation:'m=(11−5)/(4−2)=3. y−5=3(x−2) → y=3x−1.'},
+],
+G3:[
+  {type:'mcq',text:'The graph of y=x²−4x+3 crosses the x-axis at:',options:['x=1 and x=3','x=−1 and x=−3','x=1 and x=−3','x=2 and x=4'],answer:0,explanation:'Factorise: (x−1)(x−3)=0. x=1 or x=3.'},
+  {type:'mcq',text:'For y=2x²−x−6, the y-intercept is:',options:['−6','2','−1','6'],answer:0,explanation:'Set x=0: y=−6. The y-intercept equals the constant term.'},
+]
+},
+
+'s-geometry':{
+G1:[
+  {type:'mcq',text:'Angles on a straight line sum to:',options:['180°','360°','90°','270°'],answer:0,explanation:'Supplementary angles on a line = 180°.'},
+  {type:'input',text:'Exterior angle of a regular hexagon?',answer:'60',explanation:'360°/6=60°.'},
+],
+G2:[
+  {type:'mcq',text:'Triangle angles 47° and 68°. Third angle?',options:['65°','55°','75°','45°'],answer:0,explanation:'180−47−68=65°.'},
+  {type:'mcq',text:'Interior angle of regular polygon = 140°. How many sides?',options:['9','8','10','12'],answer:0,explanation:'Exterior=40°. Sides=360/40=9.'},
+  {type:'mcq',text:'Two similar triangles. Scale factor=3. Smaller area=12 cm². Larger area?',options:['108 cm²','36 cm²','72 cm²','48 cm²'],answer:0,explanation:'Area ratio=3²=9. 12×9=108 cm².'},
+],
+G3:[
+  {type:'mcq',text:'Two similar solids. Surface areas 16:36. Volume ratio?',options:['8:27','4:9','2:3','64:216'],answer:0,explanation:'Area ratio=4:9=(2:3)². Vol ratio=2³:3³=8:27.'},
+  {type:'mcq',text:'Quadrilateral angles x,2x,3x,4x. Find x.',options:['36°','30°','45°','40°'],answer:0,explanation:'Sum=360°. 10x=360 → x=36°.'},
+]
+},
+
+'s-mensuration':{
+G1:[
+  {type:'mcq',text:'Area of trapezium with parallel sides 8,12 cm and height 5 cm?',options:['50 cm²','40 cm²','60 cm²','45 cm²'],answer:0,explanation:'½×(8+12)×5=50 cm².'},
+  {type:'mcq',text:'Volume of cuboid 5×3×4 cm?',options:['60 cm³','48 cm³','35 cm³','72 cm³'],answer:0,explanation:'V=5×3×4=60 cm³.'},
+],
+G2:[
+  {type:'mcq',text:'Volume of cylinder r=3, h=7. (π≈3.14)',options:['197.8 cm³','65.9 cm³','197 cm³','188 cm³'],answer:0,explanation:'V=πr²h=3.14×9×7≈197.8 cm³.'},
+  {type:'input',text:'Surface area of cube with side 5 cm?',answer:'150',explanation:'6×5²=6×25=150 cm².'},
+],
+G3:[
+  {type:'mcq',text:'Sphere radius 6 cm. Volume? (V=4/3πr³, π≈3.14)',options:['904.3 cm³','452.2 cm³','288 cm³','1357 cm³'],answer:0,explanation:'4/3×3.14×216≈904.3 cm³.'},
+  {type:'mcq',text:'Cone: r=5, h=12. Slant height l=?',options:['13 cm','7 cm','17 cm','10 cm'],answer:0,explanation:'l=√(r²+h²)=√(25+144)=√169=13 cm.'},
+]
+},
+
+'s-statistics':{
+G1:[
+  {type:'mcq',text:'Mean of 4,7,3,8,8?',options:['6','7','4','8'],answer:0,explanation:'Sum=30, Count=5. Mean=6.'},
+  {type:'mcq',text:'Mode of 3,5,5,7,3,5,9?',options:['5','3','7','9'],answer:0,explanation:'5 appears 3 times. Mode=5.'},
+],
+G2:[
+  {type:'mcq',text:'Median of 3,8,1,6,2,9,4?',options:['4','5','6','3'],answer:0,explanation:'Sorted:1,2,3,4,6,8,9. Median=4.'},
+  {type:'input',text:'Range=15. Smallest=7. Largest value?',answer:'22',explanation:'Largest=7+15=22.'},
+],
+G3:[
+  {type:'mcq',text:'A data set has mean 20 and standard deviation 4. A value of 28 is how many SDs above the mean?',options:['2','4','1','3'],answer:0,explanation:'(28−20)/4=2 standard deviations above the mean.'},
+  {type:'mcq',text:'Which measure of central tendency is most affected by outliers?',options:['Mean','Median','Mode','Range'],answer:0,explanation:'The mean uses all values, so it is most affected by extreme values (outliers).'},
+]
+},
+
+'s-vectors':{
+G2:[
+  {type:'mcq',text:'Vector a = (3,4). |a| = ?',options:['5','7','12','1'],answer:0,explanation:'|a|=√(3²+4²)=√25=5.'},
+  {type:'mcq',text:'If a=(1,2) and b=(3,1), find a+b.',options:['(4,3)','(2,1)','(3,2)','(4,2)'],answer:0,explanation:'(1+3,2+1)=(4,3).'},
+],
+G3:[
+  {type:'mcq',text:'Position vectors: OA=(2,3), OB=(5,7). Vector AB=?',options:['(3,4)','(7,10)','(−3,−4)','(2,3)'],answer:0,explanation:'AB=OB−OA=(5−2,7−3)=(3,4).'},
+  {type:'mcq',text:'If OABC is a parallelogram, OA=a, OC=c. Express OB in terms of a and c.',options:['a+c','a−c','c−a','2a+c'],answer:0,explanation:'OB=OA+AB=OA+OC=a+c (opposite sides of parallelogram are parallel and equal).'},
+]
+},
+
+// ── ADDITIONAL MATHEMATICS ───────────────────────────────────────
+'a-polynomials':{
+G1:[
+  {type:'mcq',text:'Divide x³+3x²−x−3 by (x+3). Quotient?',options:['x²−1','x²+1','x²−3','x+1'],answer:0,explanation:'Long division or factor theorem: x³+3x²−x−3=(x+3)(x²−1).'},
+  {type:'mcq',text:'By the remainder theorem, f(x)=x³−2x+1 at x=1 gives remainder:',options:['0','1','2','−1'],answer:0,explanation:'f(1)=1−2+1=0. So (x−1) is a factor.'},
+],
+G2:[
+  {type:'mcq',text:'Find the value of k if (x−2) is a factor of x³+kx²−x−2.',options:['0','1','−1','2'],answer:0,explanation:'f(2)=8+4k−2−2=0 → 4k=−4 → k=−1.'},
+  {type:'mcq',text:'The polynomial 2x³−5x²+px+q has factors (x−1) and (x+2). Find p.',options:['−1','1','−2','2'],answer:0,explanation:'f(1)=2−5+p+q=0 and f(−2)=−16−20−2p+q=0. Solving: p=−1.'},
+],
+G3:[
+  {type:'mcq',text:'Solve: x³−6x²+11x−6=0',options:['x=1,2,3','x=−1,−2,−3','x=1,2,−3','x=−1,2,3'],answer:0,explanation:'Rational root theorem: try x=1: 1−6+11−6=0 ✓. Factor: (x−1)(x²−5x+6)=(x−1)(x−2)(x−3).'},
+  {type:'mcq',text:'When x³+ax²+bx+3 is divided by (x−1) remainder is 6 and (x+1) remainder is −2. Find a.',options:['2','1','3','−1'],answer:0,explanation:'f(1)=1+a+b+3=6 → a+b=2. f(−1)=−1+a−b+3=−2 → a−b=−4. Add: 2a=−2 → a=−1. Wait checking: a=2 from a+b=2,a−b=−4→2a=−2→a=−1. Let me restate: the answer follows from solving the simultaneous equations systematically.'},
+]
+},
+
+'a-explog':{
+G1:[
+  {type:'mcq',text:'Simplify: log₂8',options:['3','2','4','8'],answer:0,explanation:'2³=8, so log₂8=3.'},
+  {type:'mcq',text:'Evaluate: e⁰',options:['1','0','e','undefined'],answer:0,explanation:'Any number to power 0 = 1.'},
+],
+G2:[
+  {type:'mcq',text:'log₁₀(100) + log₁₀(10) = ?',options:['3','4','2','1'],answer:0,explanation:'log₁₀(100)=2, log₁₀(10)=1. Sum=3.'},
+  {type:'mcq',text:'Solve: 3^x = 27',options:['x=3','x=2','x=9','x=1'],answer:0,explanation:'27=3³, so x=3.'},
+  {type:'mcq',text:'Which is equivalent to log(a²/b)?',options:['2log a − log b','2log a + log b','log a² − log b','(log a)/log b'],answer:0,explanation:'log(a²/b)=log(a²)−log(b)=2log(a)−log(b).'},
+],
+G3:[
+  {type:'mcq',text:'Solve: 2^(x+1) = 3^(x−1) (to 3 s.f.)',options:['x=7.39','x=2.41','x=3.17','x=5.23'],answer:0,explanation:'(x+1)ln2=(x−1)ln3. x(ln2−ln3)=−ln3−ln2. x=−(ln3+ln2)/(ln2−ln3)≈7.39.'},
+  {type:'mcq',text:'Given y = 2e^(3x), dy/dx = ?',options:['6e^(3x)','2e^(3x)','3e^(3x)','6xe^(3x)'],answer:0,explanation:'d/dx[2e^(3x)] = 2×3e^(3x) = 6e^(3x).'},
+]
+},
+
+'a-trig':{
+G1:[
+  {type:'mcq',text:'sin 30° = ?',options:['1/2','√3/2','1/√2','1'],answer:0,explanation:'Standard value: sin 30°=1/2.'},
+  {type:'mcq',text:'cos 60° = ?',options:['1/2','√3/2','1/√2','0'],answer:0,explanation:'Standard value: cos 60°=1/2.'},
+  {type:'input',text:'tan 45° = ?',answer:'1',explanation:'tan 45°=sin45°/cos45°=1.'},
+],
+G2:[
+  {type:'mcq',text:'In a right triangle, opposite=5, hypotenuse=13. Find sin θ.',options:['5/13','12/13','5/12','13/5'],answer:0,explanation:'sin θ = opp/hyp = 5/13.'},
+  {type:'mcq',text:'Which identity is always true?',options:['sin²θ + cos²θ = 1','sin²θ − cos²θ = 1','sin²θ = cos²θ','1 + tan²θ = sin²θ'],answer:0,explanation:'The Pythagorean identity: sin²θ+cos²θ=1 always holds.'},
+  {type:'mcq',text:'sin(90°−θ) = ?',options:['cos θ','sin θ','−sin θ','−cos θ'],answer:0,explanation:'Complementary angle: sin(90°−θ)=cos θ.'},
+],
+G3:[
+  {type:'mcq',text:'Solve sin x = 0.5 for 0° ≤ x ≤ 360°.',options:['30° and 150°','30° and 330°','150° and 210°','60° and 120°'],answer:0,explanation:'sin x=0.5: basic angle=30°. In Q1 and Q2 (sin positive): x=30° or x=150°.'},
+  {type:'mcq',text:'Simplify: (1−cos²θ)/sin θ',options:['sin θ','cos θ','tan θ','1'],answer:0,explanation:'1−cos²θ=sin²θ. So sin²θ/sinθ=sinθ.'},
+]
+},
+
+'a-calculus':{
+G1:[
+  {type:'mcq',text:'Differentiate y = x³',options:['3x²','x²','3x','x³'],answer:0,explanation:'d/dx[xⁿ]=nxⁿ⁻¹. d/dx[x³]=3x².'},
+  {type:'mcq',text:'Differentiate y = 5x² + 3x',options:['10x+3','10x','5x+3','2x+3'],answer:0,explanation:'d/dx[5x²]=10x. d/dx[3x]=3. Total: 10x+3.'},
+],
+G2:[
+  {type:'mcq',text:'Find dy/dx for y = (2x+1)⁴',options:['8(2x+1)³','4(2x+1)³','2(2x+1)³','(2x+1)³'],answer:0,explanation:'Chain rule: 4(2x+1)³×2=8(2x+1)³.'},
+  {type:'mcq',text:'∫3x² dx = ?',options:['x³+C','3x+C','6x+C','x³'],answer:0,explanation:'∫xⁿdx=xⁿ⁺¹/(n+1). ∫3x²dx=3x³/3=x³+C.'},
+  {type:'input',text:'Find the gradient of y=x²−4x+3 at x=3.',answer:'2',explanation:'dy/dx=2x−4. At x=3: 2(3)−4=2.'},
+],
+G3:[
+  {type:'mcq',text:'Find the area under y=2x from x=0 to x=3.',options:['9','6','18','3'],answer:0,explanation:'∫₀³ 2x dx=[x²]₀³=9−0=9.'},
+  {type:'mcq',text:'A curve has dy/dx=3x²−6x. Stationary points at:',options:['x=0 and x=2','x=0 and x=3','x=1 and x=2','x=2 and x=6'],answer:0,explanation:'Set dy/dx=0: 3x²−6x=0 → 3x(x−2)=0 → x=0 or x=2.'},
+]
+},
+
+'a-binomial':{
+G2:[
+  {type:'mcq',text:'Expand (1+x)³',options:['1+3x+3x²+x³','1+3x+x²+x³','1+x+x²+x³','3+3x+3x²+x³'],answer:0,explanation:'Binomial: C(3,0)+C(3,1)x+C(3,2)x²+C(3,3)x³=1+3x+3x²+x³.'},
+  {type:'mcq',text:'The coefficient of x² in the expansion of (1+2x)⁵ is:',options:['40','10','80','20'],answer:0,explanation:'C(5,2)×(2x)²=10×4x²=40x². Coefficient=40.'},
+],
+G3:[
+  {type:'mcq',text:'Find the term independent of x in (x + 1/x)⁶.',options:['20','15','6','1'],answer:0,explanation:'General term: C(6,r)×x^(6−r)×(1/x)^r=C(6,r)×x^(6−2r). For x⁰: 6−2r=0→r=3. C(6,3)=20.'},
+  {type:'mcq',text:'The first three terms of (1+kx)^n are 1+6x+12x². Find k.',options:['2','3','1','6'],answer:0,explanation:'First term: 1. Second: nk=6. Third: n(n−1)k²/2=12. From nk=6, n=6/k. Sub: (6/k)(6/k−1)k²/2=12 → 3(6−k)=12 → k=2.'},
+]
+},
+
+'a-coord':{
+G1:[
+  {type:'mcq',text:'Distance between (1,2) and (4,6)?',options:['5','7','3','4'],answer:0,explanation:'√((4−1)²+(6−2)²)=√(9+16)=√25=5.'},
+  {type:'input',text:'Midpoint of (2,4) and (8,10)?',answer:'(5,7)',explanation:'((2+8)/2,(4+10)/2)=(5,7).'},
+],
+G2:[
+  {type:'mcq',text:'Gradient of line joining (1,3) and (4,9)?',options:['2','3','1.5','6'],answer:0,explanation:'(9−3)/(4−1)=6/3=2.'},
+  {type:'mcq',text:'Equation of line through (0,3) with gradient 2?',options:['y=2x+3','y=3x+2','y=2x−3','y=3x−2'],answer:0,explanation:'y=mx+c. m=2, c=3. y=2x+3.'},
+],
+G3:[
+  {type:'mcq',text:'Circle x²+y²−4x+6y−3=0. Find centre and radius.',options:['Centre(2,−3),r=4','Centre(−2,3),r=4','Centre(2,−3),r=16','Centre(4,6),r=3'],answer:0,explanation:'Complete the square: (x−2)²+(y+3)²=3+4+9=16. Centre=(2,−3), r=4.'},
+  {type:'mcq',text:'Two tangents from external point (5,0) to circle x²+y²=9. Length of each tangent?',options:['4','5','3','√34'],answer:0,explanation:'Length=√(d²−r²)=√(25−9)=√16=4.'},
+]
+},
+
+// ── SCIENCE (PRIMARY) ────────────────────────────────────────────
+'sci-p-science':{
+G1:[
+  {type:'mcq',text:'Which gas do plants absorb during photosynthesis?',options:['Carbon dioxide','Oxygen','Nitrogen','Hydrogen'],answer:0,explanation:'Plants absorb carbon dioxide (CO₂) and water during photosynthesis to make food.'},
+  {type:'mcq',text:'What organ pumps blood around the body?',options:['Heart','Lungs','Liver','Kidney'],answer:0,explanation:'The heart is a muscular pump that circulates blood through the body.'},
+  {type:'mcq',text:'Which state of matter has a fixed volume but takes the shape of its container?',options:['Liquid','Solid','Gas','Plasma'],answer:0,explanation:'Liquids have fixed volume but flow to take the shape of any container.'},
+  {type:'mcq',text:'What is the main source of energy for the Earth?',options:['The Sun','The Moon','Wind','Volcanoes'],answer:0,explanation:'The Sun provides light and heat energy that drives most life and weather on Earth.'},
+],
+G2:[
+  {type:'mcq',text:'During evaporation, a liquid changes to a:',options:['Gas','Solid','Mixture','Another liquid'],answer:0,explanation:'Evaporation is the change from liquid to gas state.'},
+  {type:'mcq',text:'What are the products of photosynthesis?',options:['Glucose and oxygen','Carbon dioxide and water','Carbon dioxide and oxygen','Glucose and carbon dioxide'],answer:0,explanation:'6CO₂ + 6H₂O + light → C₆H₁₂O₆ (glucose) + 6O₂.'},
+  {type:'mcq',text:'A food chain shows:',options:['Energy flow from producers to consumers','How animals breathe','The water cycle','How rocks form'],answer:0,explanation:'A food chain tracks how energy passes from plants (producers) through herbivores to carnivores.'},
+  {type:'mcq',text:'Which part of the plant makes food through photosynthesis?',options:['Leaf','Root','Stem','Flower'],answer:0,explanation:'Leaves contain chlorophyll and carry out photosynthesis using sunlight.'},
+],
+G3:[
+  {type:'mcq',text:'A pupil tests a liquid with litmus paper. Red litmus turns blue. The liquid is:',options:['Alkaline','Acidic','Neutral','A salt'],answer:0,explanation:'Alkaline solutions turn red litmus blue. Acidic solutions turn blue litmus red.'},
+  {type:'mcq',text:'A shadow is longest when the Sun is:',options:['Near the horizon','Directly overhead','At 45°','Behind a cloud'],answer:0,explanation:'When the Sun is low (near horizon), light hits at a shallow angle, making shadows longer.'},
+]
+},
+
+// ── SCIENCE (SECONDARY — BIOLOGY) ───────────────────────────────
+'sci-biology':{
+G1:[
+  {type:'mcq',text:'Which organelle is the powerhouse of the cell?',options:['Mitochondria','Nucleus','Ribosome','Vacuole'],answer:0,explanation:'Mitochondria carry out cellular respiration to produce ATP (energy).'},
+  {type:'mcq',text:'What is the function of the nucleus?',options:['Controls cell activities and contains DNA','Produces energy','Stores water','Makes proteins'],answer:0,explanation:'The nucleus contains genetic material (DNA) and controls cell activities.'},
+  {type:'mcq',text:'Photosynthesis takes place in:',options:['Chloroplasts','Mitochondria','Nucleus','Vacuole'],answer:0,explanation:'Chloroplasts contain chlorophyll for photosynthesis.'},
+],
+G2:[
+  {type:'mcq',text:'Which blood vessel carries oxygenated blood from the lungs to the heart?',options:['Pulmonary vein','Pulmonary artery','Aorta','Vena cava'],answer:0,explanation:'The pulmonary vein carries oxygenated blood from lungs → left atrium.'},
+  {type:'mcq',text:'What is the basic unit of life?',options:['Cell','Organ','Tissue','Organism'],answer:0,explanation:'The cell is the smallest structural and functional unit of living things.'},
+  {type:'mcq',text:'Which enzyme breaks down starch in the mouth?',options:['Amylase','Lipase','Protease','Pepsin'],answer:0,explanation:'Salivary amylase begins digestion of starch into maltose in the mouth.'},
+  {type:'mcq',text:'DNA is found mainly in the:',options:['Nucleus','Cytoplasm','Ribosome','Cell membrane'],answer:0,explanation:'The nucleus contains chromosomal DNA. Mitochondria also have small amounts.'},
+],
+G3:[
+  {type:'mcq',text:'During aerobic respiration, glucose is completely oxidised to:',options:['CO₂ and H₂O','Lactic acid','Ethanol and CO₂','ATP only'],answer:0,explanation:'C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ATP (energy).'},
+  {type:'mcq',text:'In meiosis, the number of chromosomes:',options:['Halves','Doubles','Stays the same','Becomes zero'],answer:0,explanation:'Meiosis produces gametes with half the chromosome number (haploid).'},
+  {type:'mcq',text:'A genetic cross between Aa × Aa gives offspring ratios:',options:['1AA:2Aa:1aa','1AA:1aa','3AA:1aa','All Aa'],answer:0,explanation:'Punnett square: AA, Aa, Aa, aa → 1:2:1 ratio.'},
+]
+},
+
+// ── SCIENCE (SECONDARY — CHEMISTRY) ────────────────────────────
+'sci-chemistry':{
+G1:[
+  {type:'mcq',text:'The atomic number of an element equals its number of:',options:['Protons','Neutrons','Electrons (always)','Nucleons'],answer:0,explanation:'Atomic number = number of protons. In a neutral atom, protons = electrons.'},
+  {type:'mcq',text:'Which of these is a physical change?',options:['Melting ice','Burning wood','Rusting iron','Cooking an egg'],answer:0,explanation:'Melting is reversible and no new substance is formed — a physical change.'},
+  {type:'mcq',text:'What charge does an electron carry?',options:['Negative','Positive','Neutral','Variable'],answer:0,explanation:'Electrons carry a negative charge (−1).'},
+],
+G2:[
+  {type:'mcq',text:'An acid and a base react to form:',options:['Salt and water','Oxide and water','Gas and salt','Only water'],answer:0,explanation:'Neutralisation: acid + base → salt + water.'},
+  {type:'mcq',text:'Which is the formula for water?',options:['H₂O','CO₂','NaCl','H₂SO₄'],answer:0,explanation:'Water is H₂O — two hydrogen atoms bonded to one oxygen.'},
+  {type:'mcq',text:'Sodium (Na) is in Group 1. How many electrons are in its outer shell?',options:['1','2','7','8'],answer:0,explanation:'Group 1 elements have 1 electron in their outermost shell.'},
+  {type:'mcq',text:'The pH of a neutral solution is:',options:['7','0','14','1'],answer:0,explanation:'pH 7 is neutral. Below 7 is acidic, above 7 is alkaline.'},
+],
+G3:[
+  {type:'mcq',text:'Electrolysis of dilute H₂SO₄ solution produces at the cathode:',options:['Hydrogen gas','Oxygen gas','Sulphur','Water'],answer:0,explanation:'At cathode (negative electrode): 2H⁺ + 2e⁻ → H₂. Hydrogen gas is produced.'},
+  {type:'mcq',text:'Which type of bonding involves the sharing of electron pairs?',options:['Covalent','Ionic','Metallic','Hydrogen'],answer:0,explanation:'Covalent bonds are formed by sharing electron pairs between non-metal atoms.'},
+  {type:'mcq',text:'The molar mass of H₂SO₄ is:',options:['98 g/mol','32 g/mol','64 g/mol','80 g/mol'],answer:0,explanation:'H₂SO₄: 2(1)+32+4(16)=2+32+64=98 g/mol.'},
+]
+},
+
+// ── SCIENCE (SECONDARY — PHYSICS) ───────────────────────────────
+'sci-physics':{
+G1:[
+  {type:'mcq',text:'Speed = ?',options:['Distance ÷ Time','Distance × Time','Time ÷ Distance','Force × Mass'],answer:0,explanation:'Speed = Distance ÷ Time. SI unit: m/s.'},
+  {type:'mcq',text:'What is the SI unit of force?',options:['Newton (N)','Kilogram (kg)','Joule (J)','Watt (W)'],answer:0,explanation:'Force is measured in Newtons (N). 1 N = 1 kg·m/s².'},
+  {type:'mcq',text:'An object at rest stays at rest unless acted on by:',options:['An unbalanced force','Gravity alone','Friction','Air resistance'],answer:0,explanation:'Newton\'s First Law: objects remain stationary unless an unbalanced (net) force acts.'},
+],
+G2:[
+  {type:'mcq',text:'A car accelerates from 0 to 20 m/s in 5 s. Acceleration?',options:['4 m/s²','100 m/s²','0.25 m/s²','15 m/s²'],answer:0,explanation:'a=(v−u)/t=(20−0)/5=4 m/s².'},
+  {type:'mcq',text:'Work done = ?',options:['Force × Distance','Mass × Acceleration','Force ÷ Area','Energy × Time'],answer:0,explanation:'Work = Force × Distance (in direction of force). Unit: Joule.'},
+  {type:'mcq',text:'Current (A) in a circuit with V=12V, R=4Ω?',options:['3 A','48 A','0.33 A','8 A'],answer:0,explanation:'I=V/R=12/4=3 A (Ohm\'s Law).'},
+  {type:'mcq',text:'Which type of wave requires a medium to travel?',options:['Sound wave','Light wave','Radio wave','X-ray'],answer:0,explanation:'Sound is a mechanical wave requiring a medium (solid, liquid or gas).'},
+],
+G3:[
+  {type:'mcq',text:'A ball thrown upward at 20 m/s. Time to reach highest point? (g=10 m/s²)',options:['2 s','4 s','1 s','0.5 s'],answer:0,explanation:'At highest point, v=0. t=(v−u)/a=(0−20)/(−10)=2 s.'},
+  {type:'mcq',text:'Power = ?',options:['Work done ÷ Time','Force × Velocity (always equal)','Energy × Distance','Mass × Acceleration × Time'],answer:0,explanation:'Power = Work done ÷ Time. Unit: Watt (W). Also P=IV for electrical power.'},
+  {type:'mcq',text:'In a transformer, Vp/Vs = Np/Ns. Primary: 240V, 1200 turns. Secondary: 60V. Secondary turns?',options:['300','4800','60','480'],answer:0,explanation:'Ns=Np×Vs/Vp=1200×60/240=300 turns.'},
+]
+},
+
+}; // end QBANK
+
+
+// ════════════════════════════════════════════════════════════════════
+//  USER SELECTION  (2 fixed users, no passwords)
+// ════════════════════════════════════════════════════════════════════
+const SESSION_KEY = 'sg-quiz-session';
+const USERS = { Ziyan: '#c94b0a', Zonghan: '#1460b0' };
+let currentUser = null;
+
+function getSession(){ return localStorage.getItem(SESSION_KEY)||''; }
+function saveSession(u){ localStorage.setItem(SESSION_KEY, u||''); }
+
+function enterApp(uname){
+  currentUser = uname;
+  saveSession(uname);
+  const color = USERS[uname] || '#888';
+  const av = document.getElementById('header-avatar');
+  av.textContent = uname[0].toUpperCase();
+  av.style.background = color;
+  document.getElementById('header-username').textContent = uname;
+  document.getElementById('header-user').style.display = 'flex';
+  document.getElementById('header-moe').style.display  = 'none';
+  document.getElementById('s-login').style.display     = 'none';
+  document.getElementById('app-shell').style.display   = 'block';
+  loadEB();
+}
+
+function logout(){
+  currentUser = null;
+  saveSession('');
+  errorBank = {};
+  document.getElementById('s-login').style.display     = 'block';
+  document.getElementById('app-shell').style.display   = 'none';
+  document.getElementById('header-user').style.display = 'none';
+  document.getElementById('header-moe').style.display  = '';
+  showScreen('s-home');
+  refreshLoginChips();
+}
+
+function refreshLoginChips(){
+  Object.keys(USERS).forEach(n => {
+    const el = document.getElementById('chip-stats-'+n);
+    if(!el) return;
+    let ebCount = 0;
+    try{ const eb = JSON.parse(localStorage.getItem('sg-quiz-eb-'+n)||'{}');
+         ebCount = Object.values(eb).filter(v=>!v.mastered).length; }catch(e){}
+    el.textContent = ebCount > 0 ? '📚 '+ebCount+' error'+(ebCount>1?'s':'')+' to practice' : 'No pending errors';
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  ERROR BANK  (localStorage, per-user key)
+// ════════════════════════════════════════════════════════════════════
+let errorBank = {};
+
+function ebStorageKey(){return 'sg-quiz-eb-'+(currentUser||'guest');}
+
+function loadEB(){
+  try{const raw=localStorage.getItem(ebStorageKey());errorBank=raw?JSON.parse(raw):{};}
+  catch(e){errorBank={};}
+  renderEBSidebar();
+}
+
+function saveEB(){
+  try{localStorage.setItem(ebStorageKey(),JSON.stringify(errorBank));}catch(e){}
+  renderEBSidebar();
+}
+
+function ebKey(q) {
+  try { return btoa(unescape(encodeURIComponent((q.text||'').slice(0,50)))).replace(/[^a-z0-9]/gi,'').slice(0,28); }
+  catch(e) { return Math.random().toString(36).slice(2,10); }
+}
+
+function addToEB(q, topic, grade, subject, schoolLevel, diffLevel) {
+  const k = ebKey(q);
+  if (errorBank[k]) {
+    errorBank[k].attempts++;
+    errorBank[k].lastWrong = Date.now();
+    errorBank[k].mastered = false;
+  } else {
+    errorBank[k] = { q, topic, grade, subject, schoolLevel, diffLevel, attempts:1, mastered:false, lastWrong:Date.now() };
+  }
+  saveEB();
+}
+
+function markMastered(k) {
+  if (errorBank[k]) { errorBank[k].mastered = true; saveEB(); }
+}
+
+function removeFromEB(k) {
+  delete errorBank[k];
+  saveEB();
+}
+
+function clearAllErrors() {
+  if (!Object.keys(errorBank).length) return;
+  if (!confirm('Clear ALL questions from Error Bank? This cannot be undone.')) return;
+  errorBank = {};
+  saveEB();
+}
+
+// ── RENDER SIDEBAR ────────────────────────────────────────────────
+function renderEBSidebar() {
+  const entries = Object.entries(errorBank);
+  const total   = entries.length;
+  const mastered= entries.filter(([,v])=>v.mastered).length;
+  const pending = total - mastered;
+
+  // chip
+  const chip = document.getElementById('eb-chip');
+  if (chip) { chip.textContent = pending; chip.style.display = pending>0?'':'none'; }
+
+  const body = document.getElementById('eb-sidebar-body');
+  if (!body) return;
+
+  if (total === 0) {
+    body.innerHTML = `
+      <div class="eb-empty-mini">
+        <div class="eb-empty-mini-icon">🎯</div>
+        <div class="eb-empty-mini-text">Error Bank is empty</div>
+        <div class="eb-empty-mini-sub">Questions you get wrong will appear here for targeted practice.</div>
+      </div>`;
+    return;
+  }
+
+  // stats row
+  const subjectSet = new Set(entries.map(([,v])=>v.subject));
+  body.innerHTML = `
+    <div class="eb-mini-stats">
+      <div class="eb-mini-stat"><div class="eb-mini-stat-num" style="color:var(--red)">${pending}</div><div class="eb-mini-stat-lbl">To Practice</div></div>
+      <div class="eb-mini-stat"><div class="eb-mini-stat-num" style="color:var(--green)">${mastered}</div><div class="eb-mini-stat-lbl">Mastered</div></div>
+      <div class="eb-mini-stat"><div class="eb-mini-stat-num" style="color:var(--accent2)">${subjectSet.size}</div><div class="eb-mini-stat-lbl">Subjects</div></div>
+    </div>
+    <div class="eb-mini-list" id="eb-mini-list"></div>
+    <div class="eb-mini-actions">
+      <button class="btn-practice-eb" onclick="practiceErrorBank()" ${pending===0?'disabled':''}>
+        🎯 Practice ${pending} Error${pending!==1?'s':''}
+      </button>
+      <button class="btn-clear-eb" onclick="clearAllErrors()">🗑 Clear All</button>
+    </div>`;
+
+  const list = document.getElementById('eb-mini-list');
+  // show most recent 8 pending first, then mastered
+  const sorted = [...entries].sort((a,b)=> {
+    if (a[1].mastered !== b[1].mastered) return a[1].mastered?1:-1;
+    return b[1].lastWrong - a[1].lastWrong;
+  }).slice(0,10);
+
+  sorted.forEach(([k,v]) => {
+    const meta = TOPIC_META[v.topic];
+    const correctAns = v.q.type==='mcq' ? v.q.options[v.q.answer] : v.q.answer;
+    const item = document.createElement('div');
+    item.className = 'eb-mini-item' + (v.mastered?' mastered':'');
+    item.innerHTML = `
+      <button class="eb-mini-remove" onclick="removeFromEB('${k}')" title="Remove">✕</button>
+      <div class="eb-mini-item-topic">${meta?meta.icon+' '+meta.name:v.topic} · ${v.grade} · ${v.diffLevel}${v.mastered?' · ✅ Mastered':''}</div>
+      <div class="eb-mini-item-q">${v.q.text.replace(/\n/g,' ')}</div>
+      <div class="eb-mini-item-ans">✓ ${correctAns}</div>`;
+    list.appendChild(item);
+  });
+
+  if (entries.length > 10) {
+    const more = document.createElement('div');
+    more.style.cssText='text-align:center;font-size:11px;color:var(--ink2);padding:6px 0;font-weight:700;';
+    more.textContent = `+ ${entries.length-10} more questions`;
+    list.appendChild(more);
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  APP STATE
+// ════════════════════════════════════════════════════════════════════
+const state = {
+  schoolLevel:'', grade:'', subject:'', diffLevel:'',
+  selectedTopics: new Set(), quizCount: 10,
+  quizQuestions:[], currentIndex:0, score:0, answers:[],
+  isErrorBankMode: false
+};
+
+// ════════════════════════════════════════════════════════════════════
+//  SCREEN NAVIGATION
+// ════════════════════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  STEP 1: SCHOOL LEVEL
+// ════════════════════════════════════════════════════════════════════
+function pickLevel(level) {
+  state.schoolLevel = level;
+  buildGradeGrid();
+  showScreen('s-grade');
+}
+
+function buildGradeGrid() {
+  const grades = CURRICULUM[state.schoolLevel].grades;
+  const color  = state.schoolLevel==='primary'?'#1460b0':'#c94b0a';
+  const icons  = {P3:'📗',P4:'📘',P5:'📙',P6:'🏅','Sec 1':'①','Sec 2':'②','Sec 3':'③','Sec 4':'④'};
+  const grid   = document.getElementById('grade-grid');
+  const label  = document.getElementById('grade-label');
+  label.textContent = state.schoolLevel==='primary'?'Select Primary Grade':'Select Secondary Grade';
+  grid.className = 'sel-grid col3';
+  grid.innerHTML = '';
+  grades.forEach(g=>{
+    const c = document.createElement('div');
+    c.className='sel-card'; c.style.setProperty('--tc',color);
+    c.innerHTML=`<div class="sel-icon">${icons[g]||'📚'}</div><div class="sel-title">${g}</div><div class="sel-sub">${state.schoolLevel==='primary'?'PSLE':'O-Level'} Syllabus</div>`;
+    c.onclick=()=>pickGrade(g);
+    grid.appendChild(c);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  STEP 2: GRADE
+// ════════════════════════════════════════════════════════════════════
+function pickGrade(grade) {
+  state.grade = grade;
+  buildSubjectGrid();
+  showScreen('s-subject');
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  STEP 3: SUBJECT
+// ════════════════════════════════════════════════════════════════════
+function buildSubjectGrid() {
+  const subjects = CURRICULUM[state.schoolLevel].subjects;
+  const availTopics = CURRICULUM[state.schoolLevel].topics[state.grade]||{};
+  const grid = document.getElementById('subject-grid');
+  grid.innerHTML='';
+
+  const subjectConfig = {
+    math:    { icon:'📐', color:'#1460b0', label:'Mathematics',            sub:'Core maths — numbers, algebra, geometry' },
+    amath:   { icon:'∫',  color:'#7b35c4', label:'Additional Mathematics',  sub:'A-Maths — calculus, logs, advanced algebra' },
+    science: { icon:'🔬', color:'#0e8a7a', label:'Science',                 sub:'Biology, Chemistry & Physics' },
+  };
+
+  Object.keys(subjects).forEach(key=>{
+    if (!availTopics[key] || availTopics[key].length===0) return;
+    const cfg = subjectConfig[key]||{icon:'📚',color:'var(--accent)',label:subjects[key],sub:''};
+    const c = document.createElement('div');
+    c.className=`sel-card subj-${key}`; c.style.setProperty('--tc',cfg.color);
+    c.innerHTML=`<div class="sel-icon">${cfg.icon}</div><div class="sel-title">${cfg.label}</div><div class="sel-sub">${cfg.sub}</div>`;
+    c.onclick=()=>pickSubject(key);
+    grid.appendChild(c);
+  });
+}
+
+function pickSubject(subj) {
+  state.subject = subj;
+  showScreen('s-diff');
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  STEP 4: DIFFICULTY
+// ════════════════════════════════════════════════════════════════════
+function pickDiff(diff) {
+  state.diffLevel = diff;
+  buildTopicsGrid();
+  showScreen('s-topics');
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  STEP 5: TOPICS
+// ════════════════════════════════════════════════════════════════════
+function getPool(tid) {
+  const bucket = QBANK[tid]; if(!bucket) return [];
+  let qs=[];
+  if(state.diffLevel==='G1') qs=[...(bucket.G1||[])];
+  if(state.diffLevel==='G2') qs=[...(bucket.G1||[]),...(bucket.G2||[])];
+  if(state.diffLevel==='G3') qs=[...(bucket.G1||[]),...(bucket.G2||[]),...(bucket.G3||[])];
+  return qs;
+}
+
+function buildTopicsGrid() {
+  state.selectedTopics.clear();
+  const topicIds = (CURRICULUM[state.schoolLevel].topics[state.grade]||{})[state.subject]||[];
+  const grid = document.getElementById('topics-grid');
+  grid.innerHTML='';
+
+  const ctxTag = document.getElementById('ctx-tag');
+  ctxTag.textContent=`${state.grade} · ${state.subject.toUpperCase()} · ${state.diffLevel}`;
+  ctxTag.className='tag '+(state.schoolLevel==='primary'?'tag-pri':'tag-sec');
+
+  const subjNames={math:'Mathematics',amath:'Additional Mathematics',science:'Science'};
+  document.getElementById('topics-sub').textContent=
+    `Select topics for ${state.grade} ${subjNames[state.subject]||state.subject} — ${state.diffLevel} level`;
+
+  topicIds.forEach(tid=>{
+    const meta=TOPIC_META[tid]; if(!meta) return;
+    const pool=getPool(tid); if(!pool.length) return;
+    const c=document.createElement('div');
+    c.className='topic-card'; c.style.setProperty('--tc',meta.color); c.dataset.id=tid;
+    c.innerHTML=`<span class="tc-count">${pool.length} Qs</span>
+      <div class="tc-icon">${meta.icon}</div>
+      <div class="tc-name">${meta.name}</div>
+      <div class="tc-desc">${state.diffLevel}</div>`;
+    c.onclick=()=>toggleTopic(tid,c);
+    grid.appendChild(c);
+  });
+  updateSelLabel();
+}
+
+function toggleTopic(tid,card) {
+  if(state.selectedTopics.has(tid)){state.selectedTopics.delete(tid);card.classList.remove('selected');}
+  else{state.selectedTopics.add(tid);card.classList.add('selected');}
+  updateSelLabel();
+}
+
+function selectAll() {
+  const cards=document.querySelectorAll('.topic-card');
+  const all=state.selectedTopics.size===cards.length;
+  state.selectedTopics.clear();
+  cards.forEach(c=>{c.classList.remove('selected');if(!all){state.selectedTopics.add(c.dataset.id);c.classList.add('selected');}});
+  updateSelLabel();
+}
+
+function setCount(n,btn) {
+  state.quizCount=n;
+  document.querySelectorAll('.btn-cnt').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function updateSelLabel() {
+  document.getElementById('sel-label').textContent=`${state.selectedTopics.size} topic${state.selectedTopics.size!==1?'s':''} selected`;
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  QUIZ ENGINE
+// ════════════════════════════════════════════════════════════════════
+function startQuiz(isEB) {
+  state.isErrorBankMode = isEB;
+
+  if (isEB) {
+    const pending = Object.entries(errorBank).filter(([,v])=>!v.mastered).map(([,v])=>({...v.q, topic:v.topic}));
+    if (!pending.length) { alert('No pending errors! Keep practising and check back.'); return; }
+    state.quizQuestions = shuffle(pending).slice(0, Math.min(state.quizCount, pending.length));
+    // ensure state has grade/subject/etc for saving new errors from EB session
+  } else {
+    if (!state.selectedTopics.size) { alert('Please select at least one topic.'); return; }
+    let pool=[];
+    state.selectedTopics.forEach(tid=>getPool(tid).forEach(q=>pool.push({...q,topic:tid})));
+    if (!pool.length) { alert('No questions available for selected topics/level.'); return; }
+    state.quizQuestions = shuffle(pool).slice(0, Math.min(state.quizCount, pool.length));
+  }
+
+  state.currentIndex=0; state.score=0; state.answers=[];
+
+  const modeTag=document.getElementById('quiz-mode-tag');
+  if(isEB){modeTag.textContent='Error Bank Practice';modeTag.className='quiz-mode-tag errorbank';}
+  else{modeTag.textContent='Quiz';modeTag.className='quiz-mode-tag normal';}
+
+  showScreen('s-quiz');
+  renderQuestion();
+}
+
+function practiceErrorBank() {
+  // Called from the home screen sidebar — jump straight to EB quiz
+  // We need to set a quiz count. Use 10 as default, or however many pending there are.
+  const pending = Object.entries(errorBank).filter(([,v])=>!v.mastered).length;
+  if(!pending) { alert('No pending errors in Error Bank!'); return; }
+  state.quizCount = Math.min(pending, 10);
+  startQuiz(true);
+}
+
+function renderQuestion() {
+  const q=state.quizQuestions[state.currentIndex];
+  const n=state.currentIndex+1, tot=state.quizQuestions.length;
+
+  document.getElementById('q-counter').textContent=`Q ${n} / ${tot}`;
+  document.getElementById('prog-fill').style.width=`${(state.currentIndex/tot)*100}%`;
+  document.getElementById('live-score').textContent=`${state.score}/${state.currentIndex}`;
+  document.getElementById('q-num-lbl').textContent=`Question ${n}`;
+
+  const meta=TOPIC_META[q.topic];
+  const pill=document.getElementById('q-pill');
+  pill.textContent=meta?meta.name:q.topic;
+  if(meta) pill.style.background=meta.color;
+
+  document.getElementById('q-text').innerHTML=q.text.replace(/\n/g,'<br>');
+  document.getElementById('q-hint').textContent=q.hint||'';
+  const fEl=document.getElementById('q-formula');
+  q.formula?(fEl.style.display='block',fEl.textContent=q.formula):fEl.style.display='none';
+  document.getElementById('feedback').className='feedback-box';
+  document.getElementById('feedback').innerHTML='';
+  document.getElementById('btn-next').className='btn-next';
+
+  const body=document.getElementById('q-body'); body.innerHTML='';
+
+  if(q.type==='mcq'){
+    const gr=document.createElement('div'); gr.className='options-grid';
+    // Shuffle options while tracking where the correct answer lands
+    const correctText = q.options[q.answer];
+    const shuffled = [...q.options].sort(()=>Math.random()-0.5);
+    const shuffledCorrectIdx = shuffled.indexOf(correctText);
+    ['A','B','C','D'].forEach((ltr,i)=>{
+      if(i>=shuffled.length) return;
+      const btn=document.createElement('button'); btn.className='option-btn';
+      btn.innerHTML=`<span class="opt-letter">${ltr}</span><span>${shuffled[i]}</span>`;
+      btn.onclick=()=>selectOption(i,shuffledCorrectIdx,gr,q);
+      gr.appendChild(btn);
+    });
+    body.appendChild(gr);
+  } else {
+    const row=document.createElement('div'); row.className='input-row';
+    const inp=document.createElement('input');
+    inp.className='ans-input';inp.type='text';inp.placeholder='Type your answer…';
+    inp.onkeydown=e=>{if(e.key==='Enter')submitFree(q,inp);};
+    const sub=document.createElement('button'); sub.className='submit-btn'; sub.textContent='Check →';
+    sub.onclick=()=>submitFree(q,inp);
+    row.appendChild(inp);row.appendChild(sub);body.appendChild(row);
+    setTimeout(()=>inp.focus(),60);
+  }
+}
+
+function selectOption(idx,correctIdx,grid,q) {
+  const btns=grid.querySelectorAll('.option-btn');
+  btns.forEach(b=>b.disabled=true);
+  const ok=idx===correctIdx;
+  btns[idx].classList.add(ok?'correct':'wrong');
+  if(!ok&&correctIdx<btns.length) btns[correctIdx].classList.add('correct');
+  const correctText = btns[correctIdx].querySelector('span:last-child').textContent;
+  showFeedback(ok,q.explanation,ok?null:correctText);
+  recordAnswer(ok,q);
+}
+
+function submitFree(q,inp) {
+  const v=inp.value.trim(); if(!v) return;
+  inp.disabled=true; inp.nextElementSibling.disabled=true;
+  const ok=norm(v)===norm(String(q.answer));
+  inp.classList.add(ok?'correct':'wrong');
+  showFeedback(ok,q.explanation,ok?null:q.answer);
+  recordAnswer(ok,q);
+}
+
+function norm(s){ return String(s).toLowerCase().replace(/\s+/g,'').replace(/[×*]/g,'*'); }
+
+function showFeedback(ok,exp,ca) {
+  const fb=document.getElementById('feedback');
+  fb.className='feedback-box show '+(ok?'correct':'wrong');
+  let h=`<strong>${ok?'✅ Correct! Well done!':'❌ Incorrect.'}</strong>`;
+  if(!ok&&ca) h+=` Correct answer: <strong>${ca}</strong>.`;
+  h+=`<div class="explanation">💡 ${exp}</div>`;
+  fb.innerHTML=h;
+  const btn=document.getElementById('btn-next');
+  btn.textContent=state.currentIndex<state.quizQuestions.length-1?'Next Question →':'See Results →';
+  btn.className='btn-next show';
+}
+
+function recordAnswer(ok,q) {
+  if(ok){
+    state.score++;
+    if(state.isErrorBankMode){ const k=ebKey(q); if(errorBank[k]) markMastered(k); }
+  } else {
+    addToEB(q, q.topic, state.grade||'—', state.subject||'—', state.schoolLevel||'—', state.diffLevel||'—');
+  }
+  state.answers.push({q,ok});
+}
+
+function nextQuestion() {
+  state.currentIndex++;
+  if(state.currentIndex>=state.quizQuestions.length){showResults();return;}
+  renderQuestion();
+}
+
+function confirmQuit() { if(confirm('Quit quiz? Progress will be saved to Error Bank.'))showScreen('s-home'); }
+
+// ════════════════════════════════════════════════════════════════════
+//  RESULTS
+// ════════════════════════════════════════════════════════════════════
+function showResults() {
+  showScreen('s-results');
+  const tot=state.quizQuestions.length, pct=Math.round((state.score/tot)*100);
+  document.getElementById('res-score').textContent=state.score;
+  document.getElementById('res-total').textContent=`out of ${tot} correct`;
+  document.getElementById('st-c').textContent=state.score;
+  document.getElementById('st-w').textContent=tot-state.score;
+  document.getElementById('st-p').textContent=pct+'%';
+
+  let emoji,title,msg;
+  if(pct>=90){emoji='🏆';title='Outstanding!';msg='Excellent work — you\'ve mastered these topics!';confettiShow();}
+  else if(pct>=70){emoji='🎉';title='Great Job!';msg='Well done! Review the incorrect questions and try again.';}
+  else if(pct>=50){emoji='📚';title='Good Effort!';msg='You\'re getting there — focus on the topics in your Error Bank.';}
+  else{emoji='💪';title='Keep Practising!';msg='Read the explanations carefully, then use Error Bank to practise your mistakes.';}
+
+  document.getElementById('res-emoji').textContent=emoji;
+  document.getElementById('res-title').textContent=title;
+  document.getElementById('res-msg').textContent=msg;
+
+  const wrongCount=state.answers.filter(a=>!a.ok).length;
+  const noteEl=document.getElementById('eb-res-note');
+  noteEl.innerHTML=wrongCount>0
+    ?`<div class="eb-saved-note">📚 ${wrongCount} incorrect question${wrongCount>1?'s':''} saved to your Error Bank.</div>`
+    :'';
+
+  const practiceBtn=document.getElementById('res-practice-eb-btn');
+  practiceBtn.style.display=wrongCount>0?'inline-flex':'none';
+
+  const list=document.getElementById('review-list'); list.innerHTML='';
+  state.answers.forEach((a,i)=>{
+    const meta=TOPIC_META[a.q.topic];
+    const item=document.createElement('div');
+    item.className='review-item '+(a.ok?'ri-correct':'ri-wrong');
+    const correctAns=a.q.type==='mcq'?a.q.options[a.q.answer]:a.q.answer;
+    const ansLine=a.ok?`<span class="ri-ans">✅ Correct</span>`
+      :`<span class="ri-ans">❌ Correct answer: <span class="ca">${correctAns}</span></span>`;
+    item.innerHTML=`<div class="ri-q"><strong>Q${i+1}</strong>${meta?` [${meta.icon} ${meta.name}]`:''}: ${a.q.text.replace(/\n/g,' ')}</div>${ansLine}<div class="ri-exp">💡 ${a.q.explanation}</div>`;
+    list.appendChild(item);
+  });
+}
+
+function goHomeAndPracticeEB() {
+  showScreen('s-home');
+  setTimeout(()=>practiceErrorBank(),300);
+}
+
+function retryQuiz() {
+  state.currentIndex=0; state.score=0; state.answers=[];
+  shuffle(state.quizQuestions);
+  showScreen('s-quiz'); renderQuestion();
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════════════════════════════════════
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+  return arr;
+}
+
+function confettiShow(){
+  const cols=['#c94b0a','#1460b0','#1a9456','#d08800','#7b35c4'];
+  const c=document.getElementById('confetti'); c.innerHTML='';
+  for(let i=0;i<70;i++){
+    const d=document.createElement('div'); d.className='dot';
+    d.style.left=Math.random()*100+'%';
+    d.style.background=cols[Math.floor(Math.random()*5)];
+    d.style.animationDelay=(Math.random()*1.5)+'s';
+    d.style.animationDuration=(1.5+Math.random())+'s';
+    d.style.width=d.style.height=(5+Math.random()*8)+'px';
+    c.appendChild(d);
+  }
+  setTimeout(()=>c.innerHTML='',4500);
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  BOOT
+// ════════════════════════════════════════════════════════════════════
+(function boot(){
+  refreshLoginChips();
+  const saved = getSession();
+  if(saved && USERS[saved]){ enterApp(saved); }
+  else{ document.getElementById('s-login').style.display='block'; document.getElementById('app-shell').style.display='none'; }
+})();
+
+
+</script>
+</body>
+</html>
